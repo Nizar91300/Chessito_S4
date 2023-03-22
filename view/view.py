@@ -33,7 +33,7 @@ class View:
     def init_frame(self):
         # on recupere l'echiquier
         echiquier = Echiquier.echiquier
-        self.fenetre.title("Echecs")
+        self.fenetre.title("Chessito")
         width = 700
         height = 600
         xmax = self.fenetre.winfo_screenwidth()
