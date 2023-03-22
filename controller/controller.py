@@ -5,8 +5,7 @@ from view.view import View
 
 
 class Controller:
-    def __init__(self, model):
-        self.model = model
+    def __init__(self):
         self.view = View(self)
         # pour retrouver la piece selectionnee
         self.piece_selectionne = self.selected_piece_moves = None
@@ -14,12 +13,12 @@ class Controller:
 
     # lancer l'application
     def run(self):
-        self.view.init_frame(self.model.echiquier)
+        self.view.init_frame()
 
     # affiche les deplacements de la piece selectionne
     def afficher_deplacements(self, piece):
         self.piece_selectionne = piece
-        dep_poss = piece.get_deplacements_possibles(self.model.echiquier)
+        dep_poss = piece.get_deplacements_possibles(Echiquier.echiquier)
         self.selected_piece_moves = dep_poss
         self.view.affiche_deplacements(dep_poss)
 
@@ -32,8 +31,8 @@ class Controller:
     def deplacer(self, l, c):
         piece_selectionne = self.piece_selectionne
         self.cacher_deplacement()
-        self.model.deplacer(piece_selectionne.ligne, piece_selectionne.colonne, l, c)
-        self.view.update_frame(self.model.echiquier)  # on met a jour la vue
+        Echiquier.deplacer(piece_selectionne.ligne, piece_selectionne.colonne, l, c)
+        self.view.update_frame()  # on met a jour la vue
 
     # gere le click sur une piece de l'echiquier
     def selectionner_piece(self, piece):
@@ -66,38 +65,38 @@ class Controller:
 
     def verifier_fin_de_partie(self):
         # cas de l'echec et mat
-        if self.model.verifier_echec_et_mat(self.couleur_joueur_actuel):
+        if Echiquier.verifier_echec_et_mat(self.couleur_joueur_actuel):
             coulGagnant = Color.NOIR if self.couleur_joueur_actuel == Color.BLANC else Color.BLANC
             self.view.afficher_fin_de_partie(coulGagnant, 0)
             return
         # cas du pat
-        if self.model.verifier_pat(self.couleur_joueur_actuel):
+        if Echiquier.verifier_pat(self.couleur_joueur_actuel):
             self.view.afficher_fin_de_partie(None, 1)
             return
         # cas position morte
-        if self.model.verifier_position_morte(self.couleur_joueur_actuel):
+        if Echiquier.verifier_position_morte(self.couleur_joueur_actuel):
             self.view.afficher_fin_de_partie(None, 2)
             return
 
         # cas de la repetition
-        if self.model.verifier_repetition():
+        if Echiquier.verifier_repetition():
             self.view.afficher_fin_de_partie(None, 3)
             return
 
     def rejouer(self):
-        self.model = Echiquier()
+        Echiquier.init()
         self.couleur_joueur_actuel = Color.BLANC
-        self.view.update_frame(self.model.echiquier)
+        self.view.update_frame()
 
     def retour_deplacement(self):
-        if (self.model.retour_deplacement()):
-            self.view.update_frame(self.model.echiquier)
+        if (Echiquier.retour_deplacement()):
+            self.view.update_frame()
         else:
-            self.view.afficher_historique(self.model.echiquier)
+            self.view.afficher_historique()
 
 
     def avancer_deplacement(self):
-        if(self.model.avancer_deplacement()):
-            self.view.update_frame(self.model.echiquier)
+        if(Echiquier.avancer_deplacement()):
+            self.view.update_frame()
         else:
-            self.view.afficher_historique(self.model.echiquier)
+            self.view.afficher_historique()

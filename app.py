@@ -2,10 +2,10 @@ from controller.controller import Controller
 from model.Echiquier import Echiquier
 
 def main():
-    # Création du model et du controller
-    model = Echiquier()
+    # on initialise le model
+    Echiquier.init()
     # le controller crée la vue
-    controller = Controller(model)
+    controller = Controller()
 
     # Démarrage de l'application
     controller.run()

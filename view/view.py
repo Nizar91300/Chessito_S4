@@ -1,6 +1,8 @@
 from tkinter import Tk, Button, PanedWindow, HORIZONTAL, CENTER, messagebox, PhotoImage
 from functools import partial
 import os
+
+from model.Echiquier import Echiquier
 from model.pieces.Vide import Vide
 
 
@@ -28,7 +30,9 @@ class View:
         os._exit(0)
 
 
-    def init_frame(self, echiquier):
+    def init_frame(self):
+        # on recupere l'echiquier
+        echiquier = Echiquier.echiquier
         self.fenetre.title("Echecs")
         width = 700
         height = 600
@@ -86,7 +90,8 @@ class View:
             print(type(piece).__name__[0] + piece.couleur.name[0])
         self.controller.selectionner_piece(piece)
 
-    def update_frame(self, echiquier):
+    def update_frame(self):
+        echiquier = Echiquier.echiquier
         for i in range(8):
             for j in range(8):
                 if isinstance(echiquier[i][j], Vide):
@@ -130,8 +135,8 @@ class View:
             self.close_frame()
 
     # on affiche l'historique d'un coup deja joue
-    def afficher_historique(self, echiquier):
-        self.update_frame(echiquier)
+    def afficher_historique(self):
+        self.update_frame()
         for i in range(8):
             for j in range(8):
                 self.buttons[i][j].config(state="disabled")
