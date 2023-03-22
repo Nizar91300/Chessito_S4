@@ -15,8 +15,14 @@ class Echiquier:
     # represente le plateau de jeu avec les pieces
     echiquier = None
 
-    #historique des coups joues
-    historique = None
+    # historique des echiquier
+    historique_echiquier = None
+
+    # contient le dernier coup joue
+    dernier_coup = None
+
+    # contient l'historique des coups joues
+    historique_coups = None
 
     # on initialise le jeu
     @staticmethod
@@ -35,7 +41,11 @@ class Echiquier:
             [Tour(Color.BLANC, 7, 0), Cavalier(Color.BLANC, 7, 1), Fou(Color.BLANC, 7, 2), Dame(Color.BLANC, 7, 3),
              Roi(Color.BLANC, 7, 4), Fou(Color.BLANC, 7, 5), Cavalier(Color.BLANC, 7, 6), Tour(Color.BLANC, 7, 7)]]
 
-        Echiquier.historique = [copy.deepcopy(Echiquier.echiquier)]
+        Echiquier.historique_echiquier = [copy.deepcopy(Echiquier.echiquier)]
+
+        Echiquier.dernier_coup = None
+
+        Echiquier.historique_coups = []
 
 
     # deplacer une piece
@@ -47,7 +57,11 @@ class Echiquier:
         Echiquier.echiquier[newL][newC].ligne = newL
         Echiquier.echiquier[newL][newC].colonne = newC
         # on ajoute l'echiquier dans l'historique
-        Echiquier.historique.append(copy.deepcopy(Echiquier.echiquier))
+        Echiquier.historique_echiquier.append(copy.deepcopy(Echiquier.echiquier))
+
+        Echiquier.dernier_coup = (oldL, oldC) , (newL, newC)
+
+        Echiquier.historique_coups.append(Echiquier.dernier_coup)
 
     # retourne le roi d'une couleur
     @staticmethod
@@ -132,11 +146,11 @@ class Echiquier:
     # verifier si la partie est nulle par repetition
     @staticmethod
     def verifier_repetition():
-        if(len(Echiquier.historique) < 5):
+        if(len(Echiquier.historique_echiquier) < 5):
             return False
         cpt = 0
         # on ne regarde que les 5 derniers coups
-        for echiquier in Echiquier.historique[-5:]:
+        for echiquier in Echiquier.historique_echiquier[-5:]:
             if echiquier == copy.deepcopy(Echiquier.echiquier):
                 cpt += 1
 
@@ -150,9 +164,16 @@ class Echiquier:
     def retour_deplacement():
         index = Echiquier.index_historique(Echiquier.echiquier)
         if(index is not None and index > 0):
-            Echiquier.echiquier = Echiquier.historique[index-1]
+            Echiquier.echiquier = Echiquier.historique_echiquier[index - 1]
 
-        if Echiquier.index_historique(Echiquier.echiquier) == len(Echiquier.historique)-1:
+            # si on est pas au premier coup, on met a jour le dernier coup pour pouvoir l'afficher
+            if index == 1:
+                Echiquier.dernier_coup = None
+
+            else:
+                Echiquier.dernier_coup = Echiquier.historique_coups[index - 2]
+
+        if Echiquier.index_historique(Echiquier.echiquier) == len(Echiquier.historique_echiquier)-1:
             return True
         return False
 
@@ -160,23 +181,20 @@ class Echiquier:
     @staticmethod
     def avancer_deplacement():
         index = Echiquier.index_historique(Echiquier.echiquier)
-        if (index is not None and index < len(Echiquier.historique)-1):
-            Echiquier.echiquier = Echiquier.historique[index + 1]
+        if (index is not None and index < len(Echiquier.historique_echiquier)-1):
+            Echiquier.echiquier = Echiquier.historique_echiquier[index + 1]
 
-        if Echiquier.index_historique(Echiquier.echiquier) == len(Echiquier.historique)-1:
+            # on met a jour le dernier coup pour pouvoir l'afficher
+            Echiquier.dernier_coup = Echiquier.historique_coups[index]
+
+        if Echiquier.index_historique(Echiquier.echiquier) == len(Echiquier.historique_echiquier)-1:
             return True
         return False
 
     # retourne l'index de l'echiquier dans l'historique
     @staticmethod
     def index_historique(e):
-        for ind, hist in enumerate(Echiquier.historique):
-            meme = True
-            for i in range(len(hist)):
-                for j in range(len(hist[i])):
-                    if hist[i][j] != e[i][j]:
-                        meme = False
-                        break
-            if meme:
+        for ind, hist in enumerate(Echiquier.historique_echiquier):
+            if hist == e:
                 return ind
         return None

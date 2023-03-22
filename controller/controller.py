@@ -89,14 +89,13 @@ class Controller:
         self.view.update_frame()
 
     def retour_deplacement(self):
-        if (Echiquier.retour_deplacement()):
+        if Echiquier.retour_deplacement():
             self.view.update_frame()
         else:
             self.view.afficher_historique()
 
-
     def avancer_deplacement(self):
-        if(Echiquier.avancer_deplacement()):
+        if Echiquier.avancer_deplacement():
             self.view.update_frame()
         else:
             self.view.afficher_historique()

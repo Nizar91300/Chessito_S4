@@ -101,9 +101,24 @@ class View:
                     couleur = echiquier[i][j].couleur.name.lower()
                     nom_image = nom_piece + "_" + couleur
                     image_piece = self.images[nom_image]
-                self.buttons[i][j].config(image = image_piece, command=partial(self.clic_btn_piece, echiquier[i][j]))
+
+                if (i + j) % 2 == 0:
+                    couleur_case = "#CCB7AE"
+                else:
+                    couleur_case = "#706677"
+
+                self.buttons[i][j].config(background = couleur_case, image = image_piece,
+                                          command=partial(self.clic_btn_piece, echiquier[i][j]))
+
+                # si les boutons sont désactivés, on les réactive
                 if self.buttons[i][j]['state'] == 'disabled':
                     self.buttons[i][j].config(state='normal')
+
+        # on met en evidence l'ancien deplacement
+        if Echiquier.dernier_coup is not None:
+            (oldL, oldC), (newL, newC) = Echiquier.dernier_coup
+            self.buttons[oldL][oldC].config(background="#B0E0E6")
+            self.buttons[newL][newC].config(background="#B0E0E6")
 
     def affiche_deplacements(self, depPossible):
         for x, y in depPossible:
@@ -115,6 +130,11 @@ class View:
                 couleur_case = "#CCB7AE"
             else:
                 couleur_case = "#706677"
+            if Echiquier.dernier_coup is not None:
+                (oldL, oldC), (newL, newC) = Echiquier.dernier_coup
+                if (x, y) == (oldL, oldC) or (x, y) == (newL, newC):
+                    couleur_case = "#B0E0E6"
+
             self.buttons[x][y].config(background=couleur_case)
 
     def afficher_fin_de_partie(self, couleur, type_fin):
