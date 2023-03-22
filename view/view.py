@@ -34,6 +34,8 @@ class View:
         # on recupere l'echiquier
         echiquier = Echiquier.echiquier
         self.fenetre.title("Chessito")
+        photo = PhotoImage(file="../images/logo.png")
+        self.fenetre.iconphoto(False, photo)
         width = 700
         height = 600
         xmax = self.fenetre.winfo_screenwidth()
