@@ -45,7 +45,7 @@ class View:
         self.fenetre.configure(background='#e4edef')
 
         for i in range(8):
-            panelModeDeJeu = PanedWindow(self.fenetre, orient=HORIZONTAL, background='#e4edef')
+            panLigneButtons = PanedWindow(self.fenetre, orient=HORIZONTAL, background='#e4edef')
             for j in range(8):
                 if (i + j) % 2 == 0:
                     couleur_case = "#CCB7AE"
@@ -63,14 +63,14 @@ class View:
                     width_button = height_button = int(min(width, height) / 10)
 
                 button_size = 10  # 10% de la taille de la fenêtre
-                self.buttons[i][j] = Button(panelModeDeJeu, image = image_piece, background=couleur_case, anchor=CENTER,
-                                            command=partial(self.clic_btn_piece, echiquier[i][j]), height=width_button,
+                self.buttons[i][j] = Button(panLigneButtons, image = image_piece, background=couleur_case,  anchor=CENTER,
+                                            borderwidth=0, command=partial(self.clic_btn_piece, echiquier[i][j]), height=width_button,
                                             width=height_button)
 
                 self.buttons[i][j].image = image_piece
-                panelModeDeJeu.add(self.buttons[i][j])
+                panLigneButtons.add(self.buttons[i][j])
 
-            panelModeDeJeu.pack()
+            panLigneButtons.pack()
         panel_historique = PanedWindow(self.fenetre, orient=HORIZONTAL, background='#e4edef')
 
         panel_historique.add(Button(panel_historique, text="Retour", command=self.controller.retour_deplacement, height=2, width=10))
