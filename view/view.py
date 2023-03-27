@@ -1,6 +1,13 @@
-from tkinter import Tk, Button, PanedWindow, HORIZONTAL, CENTER, messagebox, PhotoImage
+import tkinter
+import copy
+from tkinter import messagebox, Tk, Button
+import customtkinter
+import PIL.Image, PIL.ImageTk, PIL.ImageFilter
+
 from functools import partial
 import os
+
+import PIL.Image
 
 from model.Echiquier import Echiquier
 from model.pieces.Vide import Vide
@@ -9,20 +16,23 @@ from model.pieces.Vide import Vide
 class View:
     def __init__(self, controller):
         self.controller = controller
-        self.buttons = [[0 for x in range(8)] for y in range(8)]
+        self.buttons = [[None for x in range(8)] for y in range(8)]
         self.images = {}  # dictionnaire pour stocker les images
         self.fenetre = Tk()
         self.fenetre.protocol("WM_DELETE_WINDOW", self.close_frame)
 
-        # charger les images dans le dictionnaire
+        # charger les images des pions
         for nom_piece in ["pion", "tour", "cavalier", "fou", "dame", "roi"]:
             for couleur in ["blanc", "noir"]:
                 nom_image = nom_piece + "_" + couleur
-                chemin_image = "../images/" + nom_image + ".png"
+                chemin_image = "images/" + nom_image + ".png"
                 # charger l'image
+                img = PIL.Image.open(chemin_image)
+                self.images[nom_image] = img
 
-                photoimage = PhotoImage(file=chemin_image)
-                self.images[nom_image] = photoimage
+        self.images["case_blanche"] = PIL.Image.open("images/case_blanche.png")
+
+
 
     def close_frame(self):
         self.fenetre.quit()
@@ -34,8 +44,8 @@ class View:
         # on recupere l'echiquier
         echiquier = Echiquier.echiquier
         self.fenetre.title("Chessito")
-        photo = PhotoImage(file="../images/logo.png")
-        self.fenetre.iconphoto(False, photo)
+        #logo = ImageTk.PhotoImage("images/logo.png")
+        #self.fenetre.iconphoto(False, logo)
         width = 700
         height = 600
         xmax = self.fenetre.winfo_screenwidth()
@@ -46,38 +56,27 @@ class View:
         self.fenetre.resizable(width=False, height=False)
         self.fenetre.configure(background='#e4edef')
 
+        # on cree d'abord les bonnes images à afficher
+        img_cases = self.images_echiquier()
+
+        # on place la bonne image sur le bon bouton
         for i in range(8):
-            panLigneButtons = PanedWindow(self.fenetre, orient=HORIZONTAL, background='#e4edef')
             for j in range(8):
-                if (i + j) % 2 == 0:
-                    couleur_case = "#CCB7AE"
-                else:
-                    couleur_case = "#706677"
-                if isinstance(echiquier[i][j], Vide):
-                    image_piece = ''
-                    width_button = 4
-                    height_button = 8
-                else:
-                    nom_piece = type(echiquier[i][j]).__name__.lower()
-                    couleur = echiquier[i][j].couleur.name.lower()
-                    nom_image = nom_piece + "_" + couleur
-                    image_piece = self.images[nom_image]
-                    width_button = height_button = int(min(width, height) / 10)
+                self.buttons[i][j] = Button(self.fenetre, image = img_cases[i][j], border=0,
+                                            command=partial(self.clic_btn_piece, echiquier[i][j]), height=60,
+                                            width=60)
 
-                button_size = 10  # 10% de la taille de la fenêtre
-                self.buttons[i][j] = Button(panLigneButtons, image = image_piece, background=couleur_case,  anchor=CENTER,
-                                            borderwidth=0, command=partial(self.clic_btn_piece, echiquier[i][j]), height=width_button,
-                                            width=height_button)
+                self.buttons[i][j].grid(row=i+1, column=j+1)
 
-                self.buttons[i][j].image = image_piece
-                panLigneButtons.add(self.buttons[i][j])
+        Button(self.fenetre, text="Retour", command=self.controller.retour_deplacement,
+               height=2, width=10).grid(row=9, column=3, columnspan=2, sticky="WE")
+        Button(self.fenetre, text="Avancer", command=self.controller.avancer_deplacement,
+               height=2, width=10).grid(row=9, column=5, columnspan=2, sticky="WE")
 
-            panLigneButtons.pack()
-        panel_historique = PanedWindow(self.fenetre, orient=HORIZONTAL, background='#e4edef')
-
-        panel_historique.add(Button(panel_historique, text="Retour", command=self.controller.retour_deplacement, height=2, width=10))
-        panel_historique.add(Button(panel_historique, text="Avancer", command=self.controller.avancer_deplacement, height=2, width=10))
-        panel_historique.pack()
+        self.fenetre.rowconfigure(0, weight=1)
+        self.fenetre.rowconfigure(10, weight=1)
+        self.fenetre.columnconfigure(0, weight=1)
+        self.fenetre.columnconfigure(9, weight=1)
 
         # pour que la fentre soit toujours active et que le programme ne se bloque pas
         while True:
@@ -92,35 +91,35 @@ class View:
             print(type(piece).__name__[0] + piece.couleur.name[0])
         self.controller.selectionner_piece(piece)
 
-    def update_frame(self):
+    def images_echiquier(self):
         echiquier = Echiquier.echiquier
+        img_cases = [[None for x in range(8)] for y in range(8)]
         for i in range(8):
             for j in range(8):
-                if isinstance(echiquier[i][j], Vide):
-                    image_piece = ''
-                else:
-                    nom_piece = type(echiquier[i][j]).__name__.lower()
-                    couleur = echiquier[i][j].couleur.name.lower()
-                    nom_image = nom_piece + "_" + couleur
-                    image_piece = self.images[nom_image]
-
                 if (i + j) % 2 == 0:
-                    couleur_case = "#CCB7AE"
+                    case_img = self.images["case_blanche"].copy()
                 else:
-                    couleur_case = "#706677"
+                    case_img = self.images["case_blanche"].copy()
 
-                self.buttons[i][j].config(background = couleur_case, image = image_piece,
-                                          command=partial(self.clic_btn_piece, echiquier[i][j]))
+                # on met en evidence l'ancien deplacement
+                if Echiquier.dernier_coup is not None and (i, j) in Echiquier.dernier_coup:
+                    case_img = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=5))
+                if not isinstance(echiquier[i][j], Vide):
+                    nom_image = type(echiquier[i][j]).__name__.lower() + "_" + echiquier[i][j].couleur.name.lower()
+                    case_img.paste(self.images[nom_image].copy(), (0, 0), mask=self.images[nom_image].copy())
+                img_cases[i][j] = PIL.ImageTk.PhotoImage(case_img.resize((60, 60), PIL.Image.ANTIALIAS))
+        return img_cases
+
+    def update_frame(self):
+        echiquier = Echiquier.echiquier
+        img_cases = self.images_echiquier()
+        for i in range(8):
+            for j in range(8):
+                self.buttons[i][j].config(image = img_cases[i][j], command=partial(self.clic_btn_piece, echiquier[i][j]))
 
                 # si les boutons sont désactivés, on les réactive
                 if self.buttons[i][j]['state'] == 'disabled':
                     self.buttons[i][j].config(state='normal')
-
-        # on met en evidence l'ancien deplacement
-        if Echiquier.dernier_coup is not None:
-            (oldL, oldC), (newL, newC) = Echiquier.dernier_coup
-            self.buttons[oldL][oldC].config(background="#B0E0E6")
-            self.buttons[newL][newC].config(background="#B0E0E6")
 
     def affiche_deplacements(self, depPossible):
         for x, y in depPossible:
