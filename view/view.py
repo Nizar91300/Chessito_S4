@@ -30,7 +30,9 @@ class View:
                 img = PIL.Image.open(chemin_image)
                 self.images[nom_image] = img
 
-        self.images["case_blanche"] = PIL.Image.open("images/case_blanche.png")
+        #self.images["case_blanche"] = PIL.Image.open("images/case_blanche.png")
+        self.images["case_blanche"] = PIL.Image.new("RGB", (60, 60), "#e4edef")
+        self.images["case_noire"] = PIL.Image.new("RGB", (60, 60), "#5b5b68")
 
 
 
@@ -65,7 +67,7 @@ class View:
                 self.buttons[i][j] = Button(self.fenetre, image = img_cases[i][j], border=0,
                                             command=partial(self.clic_btn_piece, echiquier[i][j]), height=60,
                                             width=60)
-
+                self.buttons[i][j].image = img_cases[i][j]
                 self.buttons[i][j].grid(row=i+1, column=j+1)
 
         Button(self.fenetre, text="Retour", command=self.controller.retour_deplacement,
@@ -99,7 +101,7 @@ class View:
                 if (i + j) % 2 == 0:
                     case_img = self.images["case_blanche"].copy()
                 else:
-                    case_img = self.images["case_blanche"].copy()
+                    case_img = self.images["case_noire"].copy()
 
                 # on met en evidence l'ancien deplacement
                 if Echiquier.dernier_coup is not None and (i, j) in Echiquier.dernier_coup:
@@ -113,9 +115,11 @@ class View:
     def update_frame(self):
         echiquier = Echiquier.echiquier
         img_cases = self.images_echiquier()
+
         for i in range(8):
             for j in range(8):
-                self.buttons[i][j].config(image = img_cases[i][j], command=partial(self.clic_btn_piece, echiquier[i][j]))
+                self.buttons[i][j].config(image = img_cases[i][j], width=60, heigh=60, command=partial(self.clic_btn_piece, echiquier[i][j]))
+                self.buttons[i][j].image = img_cases[i][j]
 
                 # si les boutons sont désactivés, on les réactive
                 if self.buttons[i][j]['state'] == 'disabled':
