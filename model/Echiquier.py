@@ -24,6 +24,10 @@ class Echiquier:
     # contient l'historique des coups joues
     historique_coups = None
 
+    # pour retrouver la piece selectionnee
+    piece_selectionne = selected_piece_moves = None
+    couleur_joueur_actuel = Color.BLANC
+
     # on initialise le jeu
     @staticmethod
     def init():
@@ -46,6 +50,10 @@ class Echiquier:
         Echiquier.dernier_coup = None
 
         Echiquier.historique_coups = []
+
+        Echiquier.piece_selectionne = Echiquier.selected_piece_moves = None
+
+        Echiquier.couleur_joueur_actuel = Color.BLANC
 
 
     # deplacer une piece

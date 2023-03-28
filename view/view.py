@@ -1,15 +1,10 @@
-import tkinter
-import copy
-from tkinter import messagebox, Tk, Button
-import customtkinter
-import PIL.Image, PIL.ImageTk, PIL.ImageFilter, PIL.ImageDraw
-
-from functools import partial
 import os
+from functools import partial
+from tkinter import messagebox, Tk, Button
+import PIL.Image, PIL.ImageTk, PIL.ImageFilter, PIL.ImageDraw
 
 from model.Echiquier import Echiquier
 from model.pieces.Vide import Vide
-
 
 class View:
     def __init__(self, controller):
@@ -22,8 +17,8 @@ class View:
         # charger les images des pions
         for nom_piece in ["pion", "tour", "cavalier", "fou", "dame", "roi"]:
             for couleur in ["blanc", "noir"]:
-                nom_image = nom_piece + "_" + couleur
-                chemin_image = "images/" + nom_image + ".png"
+                nom_image = f"{nom_piece}_{couleur}"
+                chemin_image = f"images/{nom_image}.png"
                 # charger l'image
                 img = PIL.Image.open(chemin_image)
                 self.images[nom_image] = img
@@ -47,13 +42,10 @@ class View:
         self.fenetre.title("Chessito")
         #logo = ImageTk.PhotoImage("images/logo.png")
         #self.fenetre.iconphoto(False, logo)
-        width = 700
-        height = 600
-        xmax = self.fenetre.winfo_screenwidth()
-        ymax = self.fenetre.winfo_screenheight()
-        x0 = xmax / 2 - width / 2
-        y0 = ymax / 2 - height / 2
-        self.fenetre.geometry("%dx%d+%d+%d" % (width, height, x0, y0))
+        width, height = 700, 600
+        xmax, ymax = self.fenetre.winfo_screenwidth(), self.fenetre.winfo_screenheight()
+        x0, y0 = int(xmax / 2 - width / 2), int(ymax / 2 - height / 2)
+        self.fenetre.geometry(f"{width}x{height}+{x0}+{y0}")
         self.fenetre.resizable(width=False, height=False)
         self.fenetre.configure(background='#e4edef')
 
@@ -84,12 +76,7 @@ class View:
             self.fenetre.update()
             self.fenetre.update_idletasks()
 
-    def clic_btn_vide(self, l, c):
-        self.controller.selectionner_case_vide(l, c)
-
     def clic_btn_piece(self, piece):
-        if not isinstance(piece, Vide):
-            print(type(piece).__name__[0] + piece.couleur.name[0])
         self.controller.selectionner_piece(piece)
 
     def generer_images_echiquier(self):
@@ -104,29 +91,21 @@ class View:
 
                 # on met en evidence l'ancien deplacement
                 if Echiquier.dernier_coup is not None and (i, j) in Echiquier.dernier_coup:
-                    case_img = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=5))
+                    # Appliquer le filtre de flou gaussien
+                    blurred_image = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=5))
+
+                    # Ajouter une teinte bleue
+                    blue_tint = PIL.Image.new("RGB", case_img.size, (0, 0, 255))
+                    case_img = PIL.Image.blend(blurred_image, blue_tint, 0.3)
                 if not isinstance(echiquier[i][j], Vide):
                     nom_image = type(echiquier[i][j]).__name__.lower() + "_" + echiquier[i][j].couleur.name.lower()
                     case_img.paste(self.images[nom_image].copy(), (0, 0), mask=self.images[nom_image].copy())
                 img_cases[i][j] = PIL.ImageTk.PhotoImage(case_img.resize((60, 60), PIL.Image.ANTIALIAS))
+
+                if Echiquier.piece_selectionne is not None and (i, j) in Echiquier.selected_piece_moves:
+                    case_img.paste(self.images["dep_poss"].copy(), (0, 0), mask=self.images["dep_poss"].copy())
+                    img_cases[i][j] = PIL.ImageTk.PhotoImage(case_img.resize((60, 60), PIL.Image.ANTIALIAS))
         return img_cases
-
-    def generer_img_dep_poss(self, l, c):
-        echiquier = Echiquier.echiquier
-        if (l + c) % 2 == 0:
-            case_img = self.images["case_blanche"].copy()
-        else:
-            case_img = self.images["case_noire"].copy()
-
-        # on met en evidence l'ancien deplacement
-        if Echiquier.dernier_coup is not None and (l, c) in Echiquier.dernier_coup:
-            case_img = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=5))
-        if not isinstance(echiquier[l][c], Vide):
-            nom_image = type(echiquier[l][c]).__name__.lower() + "_" + echiquier[l][c].couleur.name.lower()
-            case_img.paste(self.images[nom_image].copy(), (0, 0), mask=self.images[nom_image].copy())
-
-        case_img.paste(self.images["dep_poss"].copy().convert("RGBA"), (0, 0), mask=self.images["dep_poss"].copy().convert("RGBA"))
-        return PIL.ImageTk.PhotoImage(case_img)
 
     def update_frame(self):
         echiquier = Echiquier.echiquier
@@ -141,11 +120,12 @@ class View:
                 if self.buttons[i][j]['state'] == 'disabled':
                     self.buttons[i][j].config(state='normal')
 
-    def affiche_deplacements(self, depPossible):
-        for x, y in depPossible:
-            new_img = self.generer_img_dep_poss(x, y)
-            self.buttons[x][y].config(image=new_img)
-            self.buttons[x][y].image = new_img
+    # on affiche l'historique d'un coup deja joue
+    def afficher_historique(self):
+        self.update_frame()
+        for i in range(8):
+            for j in range(8):
+                self.buttons[i][j].config(state="disabled")
 
     def afficher_fin_de_partie(self, couleur, type_fin):
         match type_fin:
@@ -163,10 +143,3 @@ class View:
             self.controller.rejouer()
         else:
             self.close_frame()
-
-    # on affiche l'historique d'un coup deja joue
-    def afficher_historique(self):
-        self.update_frame()
-        for i in range(8):
-            for j in range(8):
-                self.buttons[i][j].config(state="disabled")
