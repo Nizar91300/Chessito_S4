@@ -21,9 +21,9 @@ class Controller:
 
     # cache les deplacements possibles de la piece anciennement selectionnee
     def cacher_deplacement(self):
-        self.view.update_frame()
         # on reinitialise la piece selectionnee
         Echiquier.piece_selectionne = Echiquier.selected_piece_moves = None
+        self.view.update_frame()
 
     def deplacer(self, l, c):
         piece_selectionne = Echiquier.piece_selectionne
