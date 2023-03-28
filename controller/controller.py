@@ -24,7 +24,7 @@ class Controller:
 
     # cache les deplacements possibles de la piece anciennement selectionnee
     def cacher_deplacement(self):
-        self.view.cacher_deplacements(self.selected_piece_moves)
+        self.view.update_frame()
         # on reinitialise la piece selectionnee
         self.piece_selectionne = self.selected_piece_moves = None
 

@@ -2,12 +2,10 @@ import tkinter
 import copy
 from tkinter import messagebox, Tk, Button
 import customtkinter
-import PIL.Image, PIL.ImageTk, PIL.ImageFilter
+import PIL.Image, PIL.ImageTk, PIL.ImageFilter, PIL.ImageDraw
 
 from functools import partial
 import os
-
-import PIL.Image
 
 from model.Echiquier import Echiquier
 from model.pieces.Vide import Vide
@@ -34,6 +32,7 @@ class View:
         self.images["case_blanche"] = PIL.Image.new("RGB", (60, 60), "#e4edef")
         self.images["case_noire"] = PIL.Image.new("RGB", (60, 60), "#5b5b68")
 
+        self.images["dep_poss"] = PIL.Image.open("images/dep_poss.png")
 
 
     def close_frame(self):
@@ -59,7 +58,7 @@ class View:
         self.fenetre.configure(background='#e4edef')
 
         # on cree d'abord les bonnes images à afficher
-        img_cases = self.images_echiquier()
+        img_cases = self.generer_images_echiquier()
 
         # on place la bonne image sur le bon bouton
         for i in range(8):
@@ -93,7 +92,7 @@ class View:
             print(type(piece).__name__[0] + piece.couleur.name[0])
         self.controller.selectionner_piece(piece)
 
-    def images_echiquier(self):
+    def generer_images_echiquier(self):
         echiquier = Echiquier.echiquier
         img_cases = [[None for x in range(8)] for y in range(8)]
         for i in range(8):
@@ -112,13 +111,30 @@ class View:
                 img_cases[i][j] = PIL.ImageTk.PhotoImage(case_img.resize((60, 60), PIL.Image.ANTIALIAS))
         return img_cases
 
+    def generer_img_dep_poss(self, l, c):
+        echiquier = Echiquier.echiquier
+        if (l + c) % 2 == 0:
+            case_img = self.images["case_blanche"].copy()
+        else:
+            case_img = self.images["case_noire"].copy()
+
+        # on met en evidence l'ancien deplacement
+        if Echiquier.dernier_coup is not None and (l, c) in Echiquier.dernier_coup:
+            case_img = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=5))
+        if not isinstance(echiquier[l][c], Vide):
+            nom_image = type(echiquier[l][c]).__name__.lower() + "_" + echiquier[l][c].couleur.name.lower()
+            case_img.paste(self.images[nom_image].copy(), (0, 0), mask=self.images[nom_image].copy())
+
+        case_img.paste(self.images["dep_poss"].copy().convert("RGBA"), (0, 0), mask=self.images["dep_poss"].copy().convert("RGBA"))
+        return PIL.ImageTk.PhotoImage(case_img)
+
     def update_frame(self):
         echiquier = Echiquier.echiquier
-        img_cases = self.images_echiquier()
+        img_cases = self.generer_images_echiquier()
 
         for i in range(8):
             for j in range(8):
-                self.buttons[i][j].config(image = img_cases[i][j], width=60, heigh=60, command=partial(self.clic_btn_piece, echiquier[i][j]))
+                self.buttons[i][j].config(image=img_cases[i][j], width=60, heigh=60, command=partial(self.clic_btn_piece, echiquier[i][j]))
                 self.buttons[i][j].image = img_cases[i][j]
 
                 # si les boutons sont désactivés, on les réactive
@@ -127,20 +143,9 @@ class View:
 
     def affiche_deplacements(self, depPossible):
         for x, y in depPossible:
-            self.buttons[x][y].config(background="#769656")
-
-    def cacher_deplacements(self, depPossible):
-        for x, y in depPossible:
-            if (x + y) % 2 == 0:
-                couleur_case = "#CCB7AE"
-            else:
-                couleur_case = "#706677"
-            if Echiquier.dernier_coup is not None:
-                (oldL, oldC), (newL, newC) = Echiquier.dernier_coup
-                if (x, y) == (oldL, oldC) or (x, y) == (newL, newC):
-                    couleur_case = "#B0E0E6"
-
-            self.buttons[x][y].config(background=couleur_case)
+            new_img = self.generer_img_dep_poss(x, y)
+            self.buttons[x][y].config(image=new_img)
+            self.buttons[x][y].image = new_img
 
     def afficher_fin_de_partie(self, couleur, type_fin):
         match type_fin:
