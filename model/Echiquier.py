@@ -135,33 +135,39 @@ class Echiquier:
     # verifier si la partie est nulle par position morte
     @staticmethod
     def verifier_position_morte( couleur):
-
+        nb_cavalier = nb_fou = nb_pieces = 0
         for ligne in Echiquier.echiquier:
             for piece in ligne:
-                # s'il ne reste que 2 roi, c'est une position morte
-                if isinstance(piece, Vide) or isinstance(piece, Roi):
-                    continue
+                # on compte le nombre de cavalier et de fou
+                if not isinstance(piece, Vide) and piece.couleur == couleur:
+                    if isinstance(piece, Cavalier) :
+                        nb_cavalier += 1
+                    if isinstance(piece, Fou):
+                        nb_fou += 1
 
-                # s'il ne reste que 2 roi et un cavalier ou un fou, c'est une position morte
-                if piece.couleur == couleur and ( isinstance(piece, Cavalier) or isinstance(piece, Fou) ) :
-                    continue
+                    nb_pieces+=1
 
-                # s'il y a une autre piece, ce n'est pas une position morte
-                return False
 
-        return True
+        if nb_pieces == 1:
+            return True
+        # si il y a 1 seule cavaliers ou 1 seule fou separement, la partie est nulle
+        if nb_pieces == 2 and ( (nb_cavalier == 1 and nb_fou==0 ) or (nb_fou == 1 and nb_cavalier==0) ):
+            return True
+
+        return False
 
     # verifier si la partie est nulle par repetition
     @staticmethod
     def verifier_repetition():
-        if(len(Echiquier.historique_echiquier) < 5):
+        if(len(Echiquier.historique_echiquier) < 10):
             return False
         cpt = 0
-        # on ne regarde que les 5 derniers coups
-        for echiquier in Echiquier.historique_echiquier[-5:]:
-            if echiquier == copy.deepcopy(Echiquier.echiquier):
+        # on ne regarde que les 8 derniers coups
+        for echiquier in Echiquier.historique_echiquier[-10:]:
+            if echiquier == Echiquier.echiquier:
+                print("repetition")
                 cpt += 1
-
+        print(cpt)
         if cpt >= 3:
             return True
 

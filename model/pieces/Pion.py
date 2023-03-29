@@ -16,6 +16,7 @@ class Pion(Piece):
     def get_all_deplacements(self, echiquier):
         # si le pion est sur la premiere ou la derniere ligne, il ne peut pas se deplacer
         if self.ligne in (LIGNE_MIN, LIGNE_MAX):
+
             return []
 
         deplacements = []

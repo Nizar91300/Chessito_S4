@@ -1,6 +1,7 @@
 import os
+import tkinter
 from functools import partial
-from tkinter import messagebox, Tk, Button
+from tkinter import messagebox, Tk, Button, Label
 import PIL.Image, PIL.ImageTk, PIL.ImageFilter, PIL.ImageDraw
 
 from model.Echiquier import Echiquier
@@ -9,7 +10,7 @@ from model.pieces.Vide import Vide
 class View:
     def __init__(self, controller):
         self.controller = controller
-        self.buttons = [[None for x in range(8)] for y in range(8)]
+        self.cases = [[tkinter.Button for x in range(8)] for y in range(8)]
         self.images = {}  # dictionnaire pour stocker les images
         self.fenetre = Tk()
         self.fenetre.protocol("WM_DELETE_WINDOW", self.close_frame)
@@ -23,7 +24,6 @@ class View:
                 img = PIL.Image.open(chemin_image)
                 self.images[nom_image] = img
 
-        #self.images["case_blanche"] = PIL.Image.open("images/case_blanche.png")
         self.images["case_blanche"] = PIL.Image.new("RGB", (60, 60), "#e4edef")
         self.images["case_noire"] = PIL.Image.new("RGB", (60, 60), "#5b5b68")
 
@@ -55,11 +55,11 @@ class View:
         # on place la bonne image sur le bon bouton
         for i in range(8):
             for j in range(8):
-                self.buttons[i][j] = Button(self.fenetre, image = img_cases[i][j], border=0,
-                                            command=partial(self.clic_btn_piece, echiquier[i][j]), height=60,
-                                            width=60)
-                self.buttons[i][j].image = img_cases[i][j]
-                self.buttons[i][j].grid(row=i+1, column=j+1)
+                self.cases[i][j] = Label(self.fenetre, image = img_cases[i][j], height=60, bd=0,
+                                         width=60)
+                self.cases[i][j].bind("<Button-1>", partial(self.clic_btn_piece, echiquier[i][j]))
+                self.cases[i][j].image = img_cases[i][j]
+                self.cases[i][j].grid(row=i + 1, column=j + 1)
 
         Button(self.fenetre, text="Retour", command=self.controller.retour_deplacement,
                height=2, width=10).grid(row=9, column=3, columnspan=2, sticky="WE")
@@ -76,7 +76,7 @@ class View:
             self.fenetre.update()
             self.fenetre.update_idletasks()
 
-    def clic_btn_piece(self, piece):
+    def clic_btn_piece(self, piece, e):
         self.controller.selectionner_piece(piece)
 
     def generer_images_echiquier(self):
@@ -84,27 +84,28 @@ class View:
         img_cases = [[None for x in range(8)] for y in range(8)]
         for i in range(8):
             for j in range(8):
-                if (i + j) % 2 == 0:
-                    case_img = self.images["case_blanche"].copy()
-                else:
-                    case_img = self.images["case_noire"].copy()
+                case_img = self.images["case_blanche"].copy() if (i + j) % 2 == 0\
+                    else self.images["case_noire"].copy()
 
+                p = Echiquier.piece_selectionne
                 # on met en evidence l'ancien deplacement
-                if Echiquier.dernier_coup is not None and (i, j) in Echiquier.dernier_coup:
+                if ( Echiquier.dernier_coup is not None and (i, j) in Echiquier.dernier_coup ) or \
+                        ( p is not None and (i, j) == (p.ligne, p.colonne) ):
                     # Appliquer le filtre de flou gaussien
-                    blurred_image = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=5))
-
+                    blurred_image = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=1))
                     # Ajouter une teinte bleue
-                    blue_tint = PIL.Image.new("RGB", case_img.size, (0, 0, 255))
+                    blue_tint = PIL.Image.new("RGB", case_img.size, (255, 255, 0))
                     case_img = PIL.Image.blend(blurred_image, blue_tint, 0.3)
+
                 if not isinstance(echiquier[i][j], Vide):
                     nom_image = type(echiquier[i][j]).__name__.lower() + "_" + echiquier[i][j].couleur.name.lower()
-                    case_img.paste(self.images[nom_image].copy(), (0, 0), mask=self.images[nom_image].copy())
-                img_cases[i][j] = PIL.ImageTk.PhotoImage(case_img.resize((60, 60), PIL.Image.ANTIALIAS))
+                    case_img.paste(self.images[nom_image], (0, 0), mask=self.images[nom_image])
 
                 if Echiquier.piece_selectionne is not None and (i, j) in Echiquier.selected_piece_moves:
-                    case_img.paste(self.images["dep_poss"].copy(), (0, 0), mask=self.images["dep_poss"].copy())
-                    img_cases[i][j] = PIL.ImageTk.PhotoImage(case_img.resize((60, 60), PIL.Image.ANTIALIAS))
+                        case_img.paste(self.images["dep_poss"], (0, 0), mask=self.images["dep_poss"])
+
+                img_cases[i][j] = PIL.ImageTk.PhotoImage(case_img)
+
         return img_cases
 
     def update_frame(self):
@@ -113,19 +114,20 @@ class View:
 
         for i in range(8):
             for j in range(8):
-                self.buttons[i][j].config(image=img_cases[i][j], width=60, heigh=60, command=partial(self.clic_btn_piece, echiquier[i][j]))
-                self.buttons[i][j].image = img_cases[i][j]
+                self.cases[i][j].config(image=img_cases[i][j], width=60, heigh=60)
+                self.cases[i][j].bind("<Button-1>", partial(self.clic_btn_piece, echiquier[i][j]))
+                self.cases[i][j].image = img_cases[i][j]
 
                 # si les boutons sont désactivés, on les réactive
-                if self.buttons[i][j]['state'] == 'disabled':
-                    self.buttons[i][j].config(state='normal')
+                if self.cases[i][j]['state'] == 'disabled':
+                    self.cases[i][j].config(state='normal')
 
     # on affiche l'historique d'un coup deja joue
     def afficher_historique(self):
         self.update_frame()
         for i in range(8):
             for j in range(8):
-                self.buttons[i][j].config(state="disabled")
+                self.cases[i][j].config(state="disabled")
 
     def afficher_fin_de_partie(self, couleur, type_fin):
         match type_fin:
