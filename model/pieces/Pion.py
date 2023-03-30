@@ -14,9 +14,8 @@ class Pion(Piece):
 
     # méthode qui retourne les déplacements possibles
     def get_all_deplacements(self, echiquier):
-        # si le pion est sur la premiere ou la derniere ligne, il ne peut pas se deplacer
+        # si le pion est sur la premiere ou la derniere ligne alors il est promu
         if self.ligne in (LIGNE_MIN, LIGNE_MAX):
-
             return []
 
         deplacements = []
@@ -47,3 +46,7 @@ class Pion(Piece):
                     deplacements.append((x, y))
 
         return deplacements
+
+    def promotion_possible(self):
+        print(self.ligne in (LIGNE_MIN, LIGNE_MAX))
+        return self.ligne in (LIGNE_MIN, LIGNE_MAX)

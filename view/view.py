@@ -7,6 +7,7 @@ import PIL.Image, PIL.ImageTk, PIL.ImageFilter, PIL.ImageDraw
 from model.Echiquier import Echiquier
 from model.pieces.Vide import Vide
 
+
 class View:
     def __init__(self, controller):
         self.controller = controller
@@ -122,12 +123,40 @@ class View:
                 if self.cases[i][j]['state'] == 'disabled':
                     self.cases[i][j].config(state='normal')
 
+    def afficher_promotion(self, piece):
+        for i in range(8):
+            for j in range(8):
+                self.cases[i][j].config(state="disabled")
+                self.cases[i][j].unbind('<Button-1>')
+
+        # création d'un canvas pour le chox de la pièce
+        self.canvas = tkinter.Canvas(self.fenetre, bg="white", bd=0, highlightthickness=0, width=120, height=120)
+        self.canvas.place(relx=0.5, rely=0.5, anchor="center")
+
+        nom = ["Dame", "Fou", "Cavalier", "Tour"]
+        couleur = piece.couleur.name.lower()
+        imgs = [PIL.ImageTk.PhotoImage for x in range(4)]
+        for i in range(4) :
+            imgs[i] = PIL.ImageTk.PhotoImage(self.images[f"{nom[i].lower()}_{couleur}"])
+        coord = [(0, 0), (60, 0), (0, 60), (60, 60)]
+        for i in range(4):
+            label = Label(self.canvas, text=nom[i], image=imgs[i], height=60, width=60)
+            label.image = imgs[i]
+            label.place(x=coord[i][0], y=coord[i][1])
+            label.bind("<Button-1>", partial(self.controller.promotion_pion, piece, nom[i]))
+
+
+
+    def cacher_promotion(self):
+        self.canvas.destroy()
+
     # on affiche l'historique d'un coup deja joue
     def afficher_historique(self):
         self.update_frame()
         for i in range(8):
             for j in range(8):
                 self.cases[i][j].config(state="disabled")
+                self.cases[i][j].unbind('<Button-1>')
 
     def afficher_fin_de_partie(self, couleur, type_fin):
         match type_fin:

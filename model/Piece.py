@@ -21,7 +21,6 @@ class Piece:
     # renvoie la liste des deplacements de la piece en tenant compte des echecs
     def get_deplacements_possibles(self, echiquier):
         dep_poss = self.get_all_deplacements(echiquier)
-        print("before", dep_poss)
         # pour chaque deplacement possible on verifie si le roi sera en echec apres celui-ci
         for x, y in dep_poss.copy():
             echiquier_simulee = echiq.Echiquier.simuler_deplacement(echiquier, self.ligne, self.colonne, x, y)
@@ -29,6 +28,5 @@ class Piece:
             roi = echiq.Echiquier.get_roi(echiquier_simulee, self.couleur)
             if roi.est_en_echec(echiquier_simulee):
                 dep_poss.remove((x, y))
-        print("after: ", dep_poss)
         return dep_poss
 

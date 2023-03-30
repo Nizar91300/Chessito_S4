@@ -1,5 +1,6 @@
 from model.Echiquier import Echiquier
 from model.constantes import Color
+from model.pieces.Pion import Pion
 from model.pieces.Vide import Vide
 from view.view import View
 
@@ -29,7 +30,11 @@ class Controller:
         piece_selectionne = Echiquier.piece_selectionne
         self.cacher_deplacement()
         Echiquier.deplacer(piece_selectionne.ligne, piece_selectionne.colonne, l, c)
-        self.view.update_frame()  # on met a jour la vue
+        # si le pion est arrivé au bout de l'echiquier on affiche la promotion
+        if isinstance(piece_selectionne, Pion) and piece_selectionne.promotion_possible():
+            self.view.afficher_promotion(piece_selectionne)
+        else:
+            self.view.update_frame()  # on met a jour la vue
 
     # gere le click sur une piece de l'echiquier
     def selectionner_piece(self, piece):
@@ -59,6 +64,12 @@ class Controller:
         # si on clique sur une piece du joueur actuel on affiche ses deplacements
         if not isinstance(piece, Vide) and piece.couleur == Echiquier.couleur_joueur_actuel:
             self.afficher_deplacements(piece)
+
+    # gerer la promotion d'un pion
+    def promotion_pion(self, piece, type, e):
+        Echiquier.promotion_pion(piece, type)
+        self.view.update_frame()
+        self.view.cacher_promotion()
 
     def verifier_fin_de_partie(self):
         # cas de l'echec et mat

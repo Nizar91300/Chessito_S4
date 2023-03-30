@@ -58,8 +58,7 @@ class Echiquier:
 
         Echiquier.couleur_joueur_actuel = Color.BLANC
 
-        index_historique = 0
-
+        Echiquier.index_historique = 0
 
 
     # deplacer une piece
@@ -99,6 +98,18 @@ class Echiquier:
         echiquier_simulee[newL][newC].colonne = newC
 
         return echiquier_simulee
+
+    # gerer la promotion d'un pion
+    @staticmethod
+    def promotion_pion(piece, type):
+        if type=="Dame":
+            Echiquier.echiquier[piece.ligne][piece.colonne] = Dame(piece.couleur, piece.ligne, piece.colonne)
+        elif type=="Fou":
+            Echiquier.echiquier[piece.ligne][piece.colonne] = Fou(piece.couleur, piece.ligne, piece.colonne)
+        elif type=="Cavalier":
+            Echiquier.echiquier[piece.ligne][piece.colonne] = Cavalier(piece.couleur, piece.ligne, piece.colonne)
+        elif type=="Tour":
+            Echiquier.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
 
     @staticmethod
     def verifier_echec_et_mat(couleur):
@@ -173,9 +184,7 @@ class Echiquier:
         # on ne regarde que les 8 derniers coups
         for echiquier in Echiquier.historique_echiquier[-10:]:
             if echiquier == Echiquier.echiquier:
-                print("repetition")
                 cpt += 1
-        print(cpt)
         if cpt >= 3:
             return True
 
@@ -193,6 +202,9 @@ class Echiquier:
                 Echiquier.dernier_coup = None
             else:
                 Echiquier.dernier_coup = Echiquier.historique_coups[index - 2]
+            return False
+        if index == 0 and len(Echiquier.historique_echiquier) ==1:
+            return True
         return False
 
     # retourne vrai si on est au dernier coup de l'historique, faux sinon
