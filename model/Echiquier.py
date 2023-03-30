@@ -28,6 +28,9 @@ class Echiquier:
     piece_selectionne = selected_piece_moves = None
     couleur_joueur_actuel = Color.BLANC
 
+    # index dans l'historique
+    index_historique = 0
+
     # on initialise le jeu
     @staticmethod
     def init():
@@ -55,6 +58,9 @@ class Echiquier:
 
         Echiquier.couleur_joueur_actuel = Color.BLANC
 
+        index_historique = 0
+
+
 
     # deplacer une piece
     @staticmethod
@@ -70,6 +76,8 @@ class Echiquier:
         Echiquier.dernier_coup = (oldL, oldC) , (newL, newC)
 
         Echiquier.historique_coups.append(Echiquier.dernier_coup)
+
+        Echiquier.index_historique += 1
 
     # retourne le roi d'une couleur
     @staticmethod
@@ -176,39 +184,29 @@ class Echiquier:
     # retourne vrai si on est au dernier coup de l'historique, faux sinon
     @staticmethod
     def retour_deplacement():
-        index = Echiquier.index_historique(Echiquier.echiquier)
-        if(index is not None and index > 0):
+        index = Echiquier.index_historique
+        if index > 0:
             Echiquier.echiquier = Echiquier.historique_echiquier[index - 1]
-
+            Echiquier.index_historique -= 1
             # si on est pas au premier coup, on met a jour le dernier coup pour pouvoir l'afficher
-            if index == 1:
+            if index-1 == 0:
                 Echiquier.dernier_coup = None
-
             else:
                 Echiquier.dernier_coup = Echiquier.historique_coups[index - 2]
-
-        if Echiquier.index_historique(Echiquier.echiquier) == len(Echiquier.historique_echiquier)-1:
-            return True
         return False
 
     # retourne vrai si on est au dernier coup de l'historique, faux sinon
     @staticmethod
     def avancer_deplacement():
-        index = Echiquier.index_historique(Echiquier.echiquier)
-        if (index is not None and index < len(Echiquier.historique_echiquier)-1):
+        index = Echiquier.index_historique
+        if index < len(Echiquier.historique_echiquier)-1:
             Echiquier.echiquier = Echiquier.historique_echiquier[index + 1]
-
+            Echiquier.index_historique += 1
             # on met a jour le dernier coup pour pouvoir l'afficher
             Echiquier.dernier_coup = Echiquier.historique_coups[index]
+            if index+1 == len(Echiquier.historique_echiquier) - 1:
+                return True
 
-        if Echiquier.index_historique(Echiquier.echiquier) == len(Echiquier.historique_echiquier)-1:
+        if index == len(Echiquier.historique_echiquier)-1:
             return True
         return False
-
-    # retourne l'index de l'echiquier dans l'historique
-    @staticmethod
-    def index_historique(e):
-        for ind, hist in enumerate(Echiquier.historique_echiquier):
-            if hist == e:
-                return ind
-        return None
