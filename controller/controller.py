@@ -1,5 +1,5 @@
 from model.Echiquier import Echiquier
-from model.constantes import Color
+from model.constantes import Color, FinPartie
 from model.pieces.Pion import Pion
 from model.pieces.Vide import Vide
 from view.view import View
@@ -83,20 +83,20 @@ class Controller:
         # cas de l'echec et mat
         if Echiquier.verifier_echec_et_mat(Echiquier.couleur_joueur_actuel):
             coulGagnant = Color.NOIR if Echiquier.couleur_joueur_actuel == Color.BLANC else Color.BLANC
-            self.view.afficher_fin_de_partie(coulGagnant, 0)
+            self.view.afficher_fin_de_partie(coulGagnant, FinPartie.ECHEC_ET_MAT)
             return
         # cas du pat
         if Echiquier.verifier_pat(Echiquier.couleur_joueur_actuel):
-            self.view.afficher_fin_de_partie(None, 1)
+            self.view.afficher_fin_de_partie(None, FinPartie.PAT)
             return
         # cas position morte
         if Echiquier.verifier_position_morte(Echiquier.couleur_joueur_actuel):
-            self.view.afficher_fin_de_partie(None, 2)
+            self.view.afficher_fin_de_partie(None, FinPartie.POSITION_MORTE)
             return
 
         # cas de la repetition
         if Echiquier.verifier_repetition():
-            self.view.afficher_fin_de_partie(None, 3)
+            self.view.afficher_fin_de_partie(None, FinPartie.REPETITION)
             return
 
     def rejouer(self):

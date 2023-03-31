@@ -7,7 +7,8 @@ from model.pieces.Pion import Pion
 from model.pieces.Roi import Roi
 from model.pieces.Tour import Tour
 from model.pieces.Vide import Vide
-from model.constantes import Color
+from model.constantes import Color, Promotion
+
 
 # classe qui contine les attributs statiques du modele
 class Echiquier:
@@ -104,13 +105,13 @@ class Echiquier:
     # gerer la promotion d'un pion
     @staticmethod
     def promotion_pion(piece, type):
-        if type=="Dame":
+        if type == Promotion.DAME:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Dame(piece.couleur, piece.ligne, piece.colonne)
-        elif type=="Fou":
+        elif type == Promotion.FOU:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Fou(piece.couleur, piece.ligne, piece.colonne)
-        elif type=="Cavalier":
+        elif type == Promotion.CAVALIER:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Cavalier(piece.couleur, piece.ligne, piece.colonne)
-        elif type=="Tour":
+        elif type == Promotion.TOUR:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
         Echiquier.historique_echiquier[-1] = copy.deepcopy(Echiquier.echiquier)
 
