@@ -110,6 +110,7 @@ class Echiquier:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Cavalier(piece.couleur, piece.ligne, piece.colonne)
         elif type=="Tour":
             Echiquier.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
+        Echiquier.historique_echiquier[-1] = copy.deepcopy(Echiquier.echiquier)
 
     @staticmethod
     def verifier_echec_et_mat(couleur):

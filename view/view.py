@@ -13,6 +13,7 @@ class View:
         self.controller = controller
         self.cases = [[tkinter.Button for x in range(8)] for y in range(8)]
         self.images = {}  # dictionnaire pour stocker les images
+        self.canvas = None
         self.fenetre = Tk()
         self.fenetre.protocol("WM_DELETE_WINDOW", self.close_frame)
 
@@ -145,10 +146,9 @@ class View:
             label.place(x=coord[i][0], y=coord[i][1])
             label.bind("<Button-1>", partial(self.controller.promotion_pion, piece, nom[i]))
 
-
-
     def cacher_promotion(self):
         self.canvas.destroy()
+        self.canvas = None
 
     # on affiche l'historique d'un coup deja joue
     def afficher_historique(self):
