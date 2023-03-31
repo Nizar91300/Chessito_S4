@@ -69,6 +69,8 @@ class Echiquier:
         # on met a jour la position de la piece deplace
         Echiquier.echiquier[newL][newC].ligne = newL
         Echiquier.echiquier[newL][newC].colonne = newC
+        Echiquier.echiquier[newL][newC].nb_deplacements += 1
+
         # on ajoute l'echiquier dans l'historique
         Echiquier.historique_echiquier.append(copy.deepcopy(Echiquier.echiquier))
 
@@ -111,6 +113,62 @@ class Echiquier:
         elif type=="Tour":
             Echiquier.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
         Echiquier.historique_echiquier[-1] = copy.deepcopy(Echiquier.echiquier)
+
+    # methode qui retourne une liste de coups possibles pour le roque du roi
+    @staticmethod
+    def get_deplacement_roque():
+        e = Echiquier.echiquier
+        dep = []
+        roi = Echiquier.get_roi(e, Echiquier.couleur_joueur_actuel)
+        if roi.nb_deplacements > 0 or roi.est_en_echec(e):
+            return dep
+        pos = roi.ligne
+        roque = True
+        if isinstance(e[pos][0], Tour) and e[pos][0].nb_deplacements == 0:
+            for i in range(1, 4):
+                if not isinstance(e[pos][i], Vide) or e[pos][i].est_en_echec(e, Echiquier.couleur_joueur_actuel):
+                    roque = False
+                    break
+            dep += [(pos, 0)] if roque else []
+
+        roque = True
+        if isinstance(e[pos][7], Tour) and e[pos][7].nb_deplacements == 0:
+            for i in [5, 6]:
+                if not isinstance(e[pos][i], Vide) or e[pos][i].est_en_echec(e, Echiquier.couleur_joueur_actuel):
+                    roque = False
+                    break
+            dep += [(pos, 7)] if roque else []
+        return dep
+
+    # on roque
+    @staticmethod
+    def roquer(l, c):
+        echiquier = Echiquier.echiquier
+        roi = Echiquier.get_roi(echiquier, Echiquier.couleur_joueur_actuel)
+        new_col_tour = 3 if c == 0 else 5
+        new_col_roi = 2 if c == 0 else 6
+        old_col_tour = 0 if c == 0 else 7
+
+        echiquier[l][new_col_roi] = echiquier[l][roi.colonne]
+        echiquier[l][new_col_roi].colonne = new_col_roi
+        echiquier[l][new_col_roi].nb_deplacements += 1
+
+        echiquier[l][new_col_tour] = echiquier[l][old_col_tour]
+        echiquier[l][new_col_tour].colonne = new_col_tour
+        echiquier[l][new_col_tour].nb_deplacements += 1
+        echiquier[l][old_col_tour] = Vide(l, old_col_tour)
+        echiquier[l][4] = Vide(l, 4)
+
+        # on ajoute l'echiquier dans l'historique
+        Echiquier.historique_echiquier.append(copy.deepcopy(Echiquier.echiquier))
+
+        Echiquier.dernier_coup = (roi.ligne, 4), (roi.ligne, old_col_tour)
+
+        Echiquier.historique_coups.append(Echiquier.dernier_coup)
+
+        Echiquier.index_historique += 1
+
+
 
     @staticmethod
     def verifier_echec_et_mat(couleur):

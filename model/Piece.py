@@ -5,6 +5,7 @@ class Piece:
         self.couleur = coul
         self.ligne = lin
         self.colonne = col
+        self.nb_deplacements = 0
 
     # pour comparer deux pieces
     def __eq__(self, other):

@@ -136,10 +136,10 @@ class View:
 
         nom = ["Dame", "Fou", "Cavalier", "Tour"]
         couleur = piece.couleur.name.lower()
+        coord = [(0, 0), (60, 0), (0, 60), (60, 60)]
         imgs = [PIL.ImageTk.PhotoImage for x in range(4)]
         for i in range(4) :
             imgs[i] = PIL.ImageTk.PhotoImage(self.images[f"{nom[i].lower()}_{couleur}"])
-        coord = [(0, 0), (60, 0), (0, 60), (60, 60)]
         for i in range(4):
             label = Label(self.canvas, text=nom[i], image=imgs[i], height=60, width=60)
             label.image = imgs[i]

@@ -5,9 +5,7 @@ from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX
 class Cavalier(Piece):
     # constructeur
     def __init__(self, coul, lin, col):
-        self.couleur = coul
-        self.ligne = lin
-        self.colonne = col
+        super().__init__(coul, lin, col)
 
     # méthode qui retourne les déplacements possibles
     def get_all_deplacements(self, echiquier):
