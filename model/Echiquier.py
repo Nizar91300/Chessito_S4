@@ -72,14 +72,30 @@ class Echiquier:
         Echiquier.echiquier[newL][newC].colonne = newC
         Echiquier.echiquier[newL][newC].nb_deplacements += 1
 
+        #on inverse l'echiquier
+        e = Echiquier.rotation_echiquier(Echiquier.echiquier)
+        Echiquier.echiquier = e
+
         # on ajoute l'echiquier dans l'historique
         Echiquier.historique_echiquier.append(copy.deepcopy(Echiquier.echiquier))
 
-        Echiquier.dernier_coup = (oldL, oldC) , (newL, newC)
+        Echiquier.dernier_coup = (7 - oldL, 7 - oldC) , (7 - newL, 7 - newC)
 
         Echiquier.historique_coups.append(Echiquier.dernier_coup)
 
         Echiquier.index_historique += 1
+
+    # fonction pour inverser l'echiquier
+    @staticmethod
+    def rotation_echiquier(e):
+        for i in range(4):
+            for j in range(8):
+                e[i][j], e[7 - i][7 - j] = e[7 - i][7 - j], e[i][j]
+                e[i][j].ligne = i
+                e[i][j].colonne = j
+                e[7 - i][7 - j].ligne = 7 - i
+                e[7 - i][7 - j].colonne = 7 - j
+        return e
 
     # retourne le roi d'une couleur
     @staticmethod
@@ -99,6 +115,8 @@ class Echiquier:
         # on met a jour la position de la piece deplace
         echiquier_simulee[newL][newC].ligne = newL
         echiquier_simulee[newL][newC].colonne = newC
+
+        echiquier_simulee = Echiquier.rotation_echiquier(echiquier_simulee)
 
         return echiquier_simulee
 

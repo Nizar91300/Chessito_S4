@@ -20,10 +20,10 @@ class Pion(Piece):
 
         deplacements = []
 
-        # direction de déplacement du pion en fonction de sa couleur
-        direction = Pion.UP if self.couleur == Color.BLANC else Pion.DOWN
-        # place initiale du pion en fonction de sa couleur pour pouvoir se deplacer de 2 cases
-        place_initiale = 6 if self.couleur == Color.BLANC else 1
+        # direction de déplacement du pion
+        direction = Pion.UP
+        # place initiale du pion pour pouvoir se deplacer de 2 cases
+        place_initiale = 6
 
         # si la premiere case en face est vide
         x = self.ligne + direction
