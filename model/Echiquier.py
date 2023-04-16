@@ -131,6 +131,10 @@ class Echiquier:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Cavalier(piece.couleur, piece.ligne, piece.colonne)
         elif type == Promotion.TOUR:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
+        # on inverse l'echiquier
+        e = Echiquier.rotation_echiquier(Echiquier.echiquier)
+        Echiquier.echiquier = e
+
         Echiquier.historique_echiquier[-1] = copy.deepcopy(Echiquier.echiquier)
 
     # methode qui retourne une liste de coups possibles pour le roque du roi
@@ -141,22 +145,30 @@ class Echiquier:
         roi = Echiquier.get_roi(e, Echiquier.couleur_joueur_actuel)
         if roi.nb_deplacements > 0 or roi.est_en_echec(e):
             return dep
-        pos = roi.ligne
         roque = True
-        if isinstance(e[pos][0], Tour) and e[pos][0].nb_deplacements == 0:
-            for i in range(1, 4):
-                if not isinstance(e[pos][i], Vide) or e[pos][i].est_en_echec(e, Echiquier.couleur_joueur_actuel):
+
+        max_cases_left = 4 if roi.couleur == Color.BLANC else 3
+        max_cases_right = 5 if roi.couleur == Color.BLANC else 4
+
+        # Roque à gauche (petit roque si noir grand si blanc)
+        if isinstance(e[7][0], Tour) and e[7][0].nb_deplacements == 0:
+            for i in range(1, max_cases_left):
+                if not isinstance(e[7][i], Vide) or e[7][i].est_en_echec(e, Echiquier.couleur_joueur_actuel):
                     roque = False
                     break
-            dep += [(pos, 0)] if roque else []
+            if roque:
+                dep += [(7, 0)]
 
         roque = True
-        if isinstance(e[pos][7], Tour) and e[pos][7].nb_deplacements == 0:
-            for i in [5, 6]:
-                if not isinstance(e[pos][i], Vide) or e[pos][i].est_en_echec(e, Echiquier.couleur_joueur_actuel):
+        # Roque à droite (petit roque si blanc grand si noir)
+        if isinstance(e[7][7], Tour) and e[7][7].nb_deplacements == 0:
+            for i in [max_cases_right, 6]:
+                if not isinstance(e[7][i], Vide) or e[7][i].est_en_echec(e, Echiquier.couleur_joueur_actuel):
                     roque = False
                     break
-            dep += [(pos, 7)] if roque else []
+            if roque:
+                dep += [(7, 7)]
+
         return dep
 
     # on roque
@@ -164,9 +176,15 @@ class Echiquier:
     def roquer(l, c):
         echiquier = Echiquier.echiquier
         roi = Echiquier.get_roi(echiquier, Echiquier.couleur_joueur_actuel)
-        new_col_tour = 3 if c == 0 else 5
-        new_col_roi = 2 if c == 0 else 6
+        if roi.couleur == Color.BLANC:
+            new_col_tour = 3 if c == 0 else 5
+            new_col_roi = 2 if c == 0 else 6
+        else:
+            new_col_tour = 2 if c == 0 else 4
+            new_col_roi = 1 if c == 0 else 5
+
         old_col_tour = 0 if c == 0 else 7
+        old_col_roi = roi.colonne
 
         echiquier[l][new_col_roi] = echiquier[l][roi.colonne]
         echiquier[l][new_col_roi].colonne = new_col_roi
@@ -176,12 +194,16 @@ class Echiquier:
         echiquier[l][new_col_tour].colonne = new_col_tour
         echiquier[l][new_col_tour].nb_deplacements += 1
         echiquier[l][old_col_tour] = Vide(l, old_col_tour)
-        echiquier[l][4] = Vide(l, 4)
+        echiquier[l][old_col_roi] = Vide(l, old_col_roi)
+
+        # on inverse l'echiquier
+        e = Echiquier.rotation_echiquier(Echiquier.echiquier)
+        Echiquier.echiquier = e
 
         # on ajoute l'echiquier dans l'historique
         Echiquier.historique_echiquier.append(copy.deepcopy(Echiquier.echiquier))
 
-        Echiquier.dernier_coup = (roi.ligne, 4), (roi.ligne, old_col_tour)
+        Echiquier.dernier_coup = (roi.ligne, 7 - old_col_roi), (roi.ligne, roi.colonne)
 
         Echiquier.historique_coups.append(Echiquier.dernier_coup)
 
