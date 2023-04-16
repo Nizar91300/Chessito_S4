@@ -5,7 +5,7 @@ from model.pieces.Vide import Vide
 from view.view import View
 
 
-class Controller:
+class ControllerNormal:
     def __init__(self):
         self.view = View(self)
 
