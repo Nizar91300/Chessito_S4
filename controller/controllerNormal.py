@@ -2,7 +2,7 @@ from model.Echiquier import Echiquier
 from model.constantes import Color, FinPartie
 from model.pieces.Pion import Pion
 from model.pieces.Vide import Vide
-from view.view import View
+from view.viewEchiquier import View
 
 
 class ControllerNormal:
