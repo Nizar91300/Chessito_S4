@@ -73,16 +73,12 @@ class Echiquier:
         Echiquier.echiquier[newL][newC].nb_deplacements += 1
 
         #on inverse l'echiquier
-        e = Echiquier.rotation_echiquier(Echiquier.echiquier)
-        Echiquier.echiquier = e
+        Echiquier.echiquier = Echiquier.rotation_echiquier(Echiquier.echiquier)
 
-        # on ajoute l'echiquier dans l'historique
+        # on met a jour l'historique
         Echiquier.historique_echiquier.append(copy.deepcopy(Echiquier.echiquier))
-
         Echiquier.dernier_coup = (7 - oldL, 7 - oldC) , (7 - newL, 7 - newC)
-
         Echiquier.historique_coups.append(Echiquier.dernier_coup)
-
         Echiquier.index_historique += 1
 
     # fonction pour inverser l'echiquier
@@ -132,8 +128,7 @@ class Echiquier:
         elif type == Promotion.TOUR:
             Echiquier.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
         # on inverse l'echiquier
-        e = Echiquier.rotation_echiquier(Echiquier.echiquier)
-        Echiquier.echiquier = e
+        Echiquier.echiquier = Echiquier.rotation_echiquier(Echiquier.echiquier)
 
         Echiquier.historique_echiquier[-1] = copy.deepcopy(Echiquier.echiquier)
 
@@ -197,19 +192,13 @@ class Echiquier:
         echiquier[l][old_col_roi] = Vide(l, old_col_roi)
 
         # on inverse l'echiquier
-        e = Echiquier.rotation_echiquier(Echiquier.echiquier)
-        Echiquier.echiquier = e
+        Echiquier.echiquier = Echiquier.rotation_echiquier(Echiquier.echiquier)
 
         # on ajoute l'echiquier dans l'historique
         Echiquier.historique_echiquier.append(copy.deepcopy(Echiquier.echiquier))
-
         Echiquier.dernier_coup = (roi.ligne, 7 - old_col_roi), (roi.ligne, roi.colonne)
-
         Echiquier.historique_coups.append(Echiquier.dernier_coup)
-
         Echiquier.index_historique += 1
-
-
 
     @staticmethod
     def verifier_echec_et_mat(couleur):
