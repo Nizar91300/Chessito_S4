@@ -1,7 +1,7 @@
 from model.Piece import Piece
 from model.pieces.Vide import Vide
 from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX
-import model.Echiquier as echiq
+import model.EchiquierNormal as echiq
 
 
 class Roi(Piece):
@@ -38,7 +38,7 @@ class Roi(Piece):
     def get_deplacements_possibles(self, echiquier):
         dep = super().get_deplacements_possibles(echiquier)
         # on ajoute le déplacement du roque
-        dep.extend(echiq.Echiquier.get_deplacement_roque())
+        dep.extend(echiq.EchiquierNormal.get_deplacement_roque())
         return dep
 
     # méthode qui retourne si le roi est en échec ou non

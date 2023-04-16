@@ -4,12 +4,12 @@ from functools import partial
 from tkinter import messagebox, Tk, Button, Label
 import PIL.Image, PIL.ImageTk, PIL.ImageFilter, PIL.ImageDraw
 
-from model.Echiquier import Echiquier
+from model.EchiquierNormal import EchiquierNormal as Echiquier
 from model.pieces.Vide import Vide
 from model.constantes import *
 
 
-class View:
+class ViewEchiquier:
     def __init__(self, controller):
         self.controller = controller
         # les cases de l'echiquier qui sont des labels

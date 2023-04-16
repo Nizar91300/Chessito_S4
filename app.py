@@ -1,9 +1,9 @@
 from controller.controllerNormal import ControllerNormal
-from model.Echiquier import Echiquier
+from model.EchiquierNormal import EchiquierNormal
 
 def main():
     # on initialise le model
-    Echiquier.init()
+    EchiquierNormal.init()
     # le controller crée la vue
     controller = ControllerNormal()
 
