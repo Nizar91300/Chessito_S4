@@ -1,4 +1,4 @@
-from model.EchiquierNormal import EchiquierNormal as Echiquier
+from model.EchiquierNormal import Echiquier
 from model.constantes import Color, FinPartie
 from model.pieces.Pion import Pion
 from model.pieces.Vide import Vide
@@ -7,7 +7,7 @@ from view.viewEchiquier import ViewEchiquier
 
 class ControllerNormal:
     def __init__(self):
-        self.view = ViewEchiquier(self)
+        self.view = View(self)
 
     # lancer l'application
     def run(self):
