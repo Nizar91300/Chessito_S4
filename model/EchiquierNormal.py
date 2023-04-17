@@ -31,15 +31,23 @@ class EchiquierNormal:
         else:
             self.echiquier = args[0]
 
-        self.historique_echiquier = []
+        self.historique_echiquier = [self.echiquier]
         self.dernier_coup = None
         self.historique_coups = []
         self.piece_selectionne = self.selected_piece_moves = None
         self.couleur_joueur_actuel = Color.BLANC
         self.index_historique = 0
 
+    # fonction pour la suppression de l'objet
     def __del__(self):
-        pass
+        del self.echiquier
+        del self.historique_echiquier
+        del self.dernier_coup
+        del self.historique_coups
+        del self.piece_selectionne
+        del self.selected_piece_moves
+        del self.couleur_joueur_actuel
+        del self.index_historique
 
     # deplacer une piece
     def deplacer(self, oldL, oldC, newL, newC):

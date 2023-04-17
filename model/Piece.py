@@ -29,5 +29,7 @@ class Piece:
             roi = echiquier_simulee.get_roi(self.couleur)
             if roi.est_en_echec(echiquier_simulee):
                 dep_poss.remove((x, y))
+            # on supprime l'objet echiquier_simulee
+            del echiquier_simulee
         return dep_poss
 
