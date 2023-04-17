@@ -3,9 +3,8 @@ import copy
 from model.EchiquierNormal import EchiquierNormal
 from model.pieces.Vide import Vide
 class EchiquierAtomic(EchiquierNormal):
-    @staticmethod
-    def deplacer(oldL, oldC, newL, newC):
-        e = EchiquierAtomic.echiquier
+    def deplacer(self, oldL, oldC, newL, newC):
+        e = self.echiquier
         # si on mange un pion on detruit tout atour les autre pions
         if not isinstance(e[newL][newC], Vide) and e[newL][newC].couleur != e[oldL][oldC].couleur:
             e[oldL][oldC] = Vide(oldL, oldC)

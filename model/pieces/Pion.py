@@ -13,12 +13,13 @@ class Pion(Piece):
         super().__init__(coul, lin, col)
 
     # méthode qui retourne les déplacements possibles
-    def get_all_deplacements(self, echiquier):
+    def get_all_deplacements(self, modele):
         # si le pion est sur la premiere ou la derniere ligne alors il est promu
         if self.ligne in (LIGNE_MIN, LIGNE_MAX):
             return []
 
         deplacements = []
+        echiquier = modele.echiquier
 
         # direction de déplacement du pion
         direction = Pion.UP

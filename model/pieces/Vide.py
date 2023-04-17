@@ -17,10 +17,10 @@ class Vide:
         return self.ligne == other.ligne and self.colonne == other.colonne
 
     # méthode qui retourne si le roi est en échec ou non
-    def est_en_echec(self, echiquier, couleur):
+    def est_en_echec(self, modele, couleur):
         for ligne in range(LIGNE_MAX+1):
             for colonne in range(COLONNE_MAX+1):
-                piece = echiquier[ligne][colonne]
-                if not isinstance(piece, Vide) and piece.couleur != couleur and (self.ligne, self.colonne) in piece.get_all_deplacements(echiquier):
+                piece = modele.echiquier[ligne][colonne]
+                if not isinstance(piece, Vide) and piece.couleur != couleur and (self.ligne, self.colonne) in piece.get_all_deplacements(modele):
                     return True
         return False

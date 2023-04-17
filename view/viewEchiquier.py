@@ -10,8 +10,9 @@ from model.constantes import *
 
 
 class ViewEchiquier:
-    def __init__(self, controller):
+    def __init__(self, controller, model):
         self.controller = controller
+        self.model = model
         # les cases de l'echiquier qui sont des labels
         self.cases = [[tkinter.Label for x in range(LIGNE_MAX + 1)] for y in range(COLONNE_MAX + 1)]
         self.images = {}  # dictionnaire pour stocker les images
@@ -45,7 +46,7 @@ class ViewEchiquier:
     # initialiser la fenetre avec tous ses composants
     def init_frame(self):
         # on recupere l'echiquier
-        echiquier = Echiquier.echiquier
+        echiquier = self.model.echiquier
         # ajout du titre et du logo
         self.fenetre.title("Chessito")
         logo = tkinter.PhotoImage(file="images/logo.png")
@@ -98,7 +99,7 @@ class ViewEchiquier:
 
     # fonction qui genere les images a afficher sur l'echiquier en fonction du modele
     def generer_images_echiquier(self):
-        echiquier = Echiquier.echiquier
+        echiquier = self.model.echiquier
         img_cases = [[None for x in range(LIGNE_MAX + 1)] for y in range(COLONNE_MAX + 1)]
         for i in range(LIGNE_MAX + 1):
             for j in range(COLONNE_MAX + 1):
@@ -106,9 +107,9 @@ class ViewEchiquier:
                 case_img = self.images["case_blanche"].copy() if (i + j) % 2 == 0\
                     else self.images["case_noire"].copy()
 
-                p = Echiquier.piece_selectionne
+                p = self.model.piece_selectionne
                 # on met en evidence l'ancien deplacement
-                if ( Echiquier.dernier_coup is not None and (i, j) in Echiquier.dernier_coup ) or \
+                if ( self.model.dernier_coup is not None and (i, j) in self.model.dernier_coup ) or \
                         ( p is not None and (i, j) == (p.ligne, p.colonne) ):
                     # Appliquer le filtre de flou gaussien
                     blurred_image = case_img.filter(PIL.ImageFilter.GaussianBlur(radius=1))
@@ -122,7 +123,7 @@ class ViewEchiquier:
                     case_img.paste(self.images[nom_image], (0, 0), mask=self.images[nom_image])
 
                 # si une piece est selectionnee, et que la case est dans les deplacements possibles on l'affiche
-                if Echiquier.piece_selectionne is not None and (i, j) in Echiquier.selected_piece_moves:
+                if self.model.piece_selectionne is not None and (i, j) in self.model.selected_piece_moves:
                         case_img.paste(self.images["dep_poss"], (0, 0), mask=self.images["dep_poss"])
 
                 # apres avoir modifie l'image, on la convertit en image tkinter
@@ -132,7 +133,7 @@ class ViewEchiquier:
 
     # met a jour l'affichage de l'echiquier selon le modele
     def update_frame(self):
-        echiquier = Echiquier.echiquier
+        echiquier = self.model.echiquier
         # on recupere les images a afficher
         img_cases = self.generer_images_echiquier()
 

@@ -10,8 +10,9 @@ class Roi(Piece):
         super().__init__(coul, lin, col)
 
     # méthode qui retourne les déplacements possibles
-    def get_all_deplacements(self, echiquier):
+    def get_all_deplacements(self, model):
         deplacements = []
+        echiquier = model.echiquier
 
         # deplacements possibles du roi
         possible_moves = [
@@ -35,18 +36,18 @@ class Roi(Piece):
 
         return deplacements
 
-    def get_deplacements_possibles(self, echiquier):
-        dep = super().get_deplacements_possibles(echiquier)
+    def get_deplacements_possibles(self, model):
+        dep = super().get_deplacements_possibles(model)
         # on ajoute le déplacement du roque
-        dep.extend(echiq.EchiquierNormal.get_deplacement_roque())
+        dep.extend(model.get_deplacement_roque())
         return dep
 
     # méthode qui retourne si le roi est en échec ou non
-    def est_en_echec(self, echiquier):
+    def est_en_echec(self, modele):
         for ligne in range(LIGNE_MAX+1):
             for colonne in range(COLONNE_MAX+1):
-                piece = echiquier[ligne][colonne]
-                if not isinstance(piece, Vide) and piece.couleur != self.couleur and (self.ligne, self.colonne) in piece.get_all_deplacements(echiquier):
+                piece = modele.echiquier[ligne][colonne]
+                if not isinstance(piece, Vide) and piece.couleur != self.couleur and (self.ligne, self.colonne) in piece.get_all_deplacements(modele):
                     return True
         return False
 

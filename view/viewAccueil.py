@@ -2,6 +2,10 @@ import os
 import tkinter
 from functools import partial
 from tkinter import Tk, Button
+
+from controller.controllerNormal import ControllerNormal
+from model.EchiquierAtomic import EchiquierAtomic
+from model.EchiquierNormal import EchiquierNormal
 from model.constantes import *
 class ViewAccueil:
     def close_frame(self):
@@ -35,11 +39,11 @@ class ViewAccueil:
 
     def change_mode(self, mode):
         self.fenetre.destroy()
-        from controller.controllerNormal import ControllerNormal
+
         if mode == "Atomic":
-            controller = ControllerNormal("EchiquierAtomic")
+            controller = ControllerNormal(EchiquierAtomic())
         else:
-            controller = ControllerNormal("EchiquierNormal")
+            controller = ControllerNormal(EchiquierNormal())
 
         controller.run()
 

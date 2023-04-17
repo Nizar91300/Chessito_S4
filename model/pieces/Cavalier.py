@@ -8,9 +8,9 @@ class Cavalier(Piece):
         super().__init__(coul, lin, col)
 
     # méthode qui retourne les déplacements possibles
-    def get_all_deplacements(self, echiquier):
+    def get_all_deplacements(self, modele):
         deplacements = []
-
+        echiquier = modele.echiquier
         # déplacements possibles pour le cavalier
         possible_moves = [
             (self.ligne - 2, self.colonne + 1),

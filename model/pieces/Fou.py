@@ -8,8 +8,9 @@ class Fou(Piece):
         super().__init__(coul, lin, col)
 
     # méthode qui retourne les déplacements possibles
-    def get_all_deplacements(self, echiquier):
+    def get_all_deplacements(self, modele):
         deplacements = []
+        echiquier = modele.echiquier
 
         # directions des diagonales du fou
         directions = [(1, 1), (-1, 1), (1, -1), (-1, -1)]

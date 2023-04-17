@@ -12,133 +12,98 @@ from model.constantes import Color, Promotion
 
 # classe qui contine les attributs statiques du modele
 class EchiquierNormal:
+    def __init__(self, *args):
+        # si on donne un echiquier en parametre on l'utilise sinon on cree un echiquier normal
+        if len(args) == 0:
+            self.echiquier = [
+                [Tour(Color.NOIR, 0, 0), Cavalier(Color.NOIR, 0, 1), Fou(Color.NOIR, 0, 2), Dame(Color.NOIR, 0, 3),
+                 Roi(Color.NOIR, 0, 4), Fou(Color.NOIR, 0, 5), Cavalier(Color.NOIR, 0, 6), Tour(Color.NOIR, 0, 7)],
+                [Pion(Color.NOIR, 1, 0), Pion(Color.NOIR, 1, 1), Pion(Color.NOIR, 1, 2), Pion(Color.NOIR, 1, 3),
+                 Pion(Color.NOIR, 1, 4), Pion(Color.NOIR, 1, 5), Pion(Color.NOIR, 1, 6), Pion(Color.NOIR, 1, 7)],
+                [Vide(2, 0), Vide(2, 1), Vide(2, 2), Vide(2, 3), Vide(2, 4), Vide(2, 5), Vide(2, 6), Vide(2, 7)],
+                [Vide(3, 0), Vide(3, 1), Vide(3, 2), Vide(3, 3), Vide(3, 4), Vide(3, 5), Vide(3, 6), Vide(3, 7)],
+                [Vide(4, 0), Vide(4, 1), Vide(4, 2), Vide(4, 3), Vide(4, 4), Vide(4, 5), Vide(4, 6), Vide(4, 7)],
+                [Vide(5, 0), Vide(5, 1), Vide(5, 2), Vide(5, 3), Vide(5, 4), Vide(5, 5), Vide(5, 6), Vide(5, 7)],
+                [Pion(Color.BLANC, 6, 0), Pion(Color.BLANC, 6, 1), Pion(Color.BLANC, 6, 2), Pion(Color.BLANC, 6, 3),
+                 Pion(Color.BLANC, 6, 4), Pion(Color.BLANC, 6, 5), Pion(Color.BLANC, 6, 6), Pion(Color.BLANC, 6, 7)],
+                [Tour(Color.BLANC, 7, 0), Cavalier(Color.BLANC, 7, 1), Fou(Color.BLANC, 7, 2), Dame(Color.BLANC, 7, 3),
+                 Roi(Color.BLANC, 7, 4), Fou(Color.BLANC, 7, 5), Cavalier(Color.BLANC, 7, 6), Tour(Color.BLANC, 7, 7)]]
+        else:
+            self.echiquier = args[0]
 
-    # represente le plateau de jeu avec les pieces
-    echiquier = None
+        self.historique_echiquier = []
+        self.dernier_coup = None
+        self.historique_coups = []
+        self.piece_selectionne = self.selected_piece_moves = None
+        self.couleur_joueur_actuel = Color.BLANC
+        self.index_historique = 0
 
-    # historique des echiquier
-    historique_echiquier = None
-
-    # contient le dernier coup joue
-    dernier_coup = None
-
-    # contient l'historique des coups joues
-    historique_coups = None
-
-    # pour retrouver la piece selectionnee
-    piece_selectionne = selected_piece_moves = None
-    couleur_joueur_actuel = Color.BLANC
-
-    # index dans l'historique
-    index_historique = 0
-
-    # on initialise le jeu
-    @staticmethod
-    def init():
-        EchiquierNormal.echiquier = [
-            [Tour(Color.NOIR, 0, 0), Cavalier(Color.NOIR, 0, 1), Fou(Color.NOIR, 0, 2), Dame(Color.NOIR, 0, 3),
-             Roi(Color.NOIR, 0, 4), Fou(Color.NOIR, 0, 5), Cavalier(Color.NOIR, 0, 6), Tour(Color.NOIR, 0, 7)],
-            [Pion(Color.NOIR, 1, 0), Pion(Color.NOIR, 1, 1), Pion(Color.NOIR, 1, 2), Pion(Color.NOIR, 1, 3),
-             Pion(Color.NOIR, 1, 4), Pion(Color.NOIR, 1, 5), Pion(Color.NOIR, 1, 6), Pion(Color.NOIR, 1, 7)],
-            [Vide(2, 0), Vide(2, 1), Vide(2, 2), Vide(2, 3), Vide(2, 4), Vide(2, 5), Vide(2, 6), Vide(2, 7)],
-            [Vide(3, 0), Vide(3, 1), Vide(3, 2), Vide(3, 3), Vide(3, 4), Vide(3, 5), Vide(3, 6), Vide(3, 7)],
-            [Vide(4, 0), Vide(4, 1), Vide(4, 2), Vide(4, 3), Vide(4, 4), Vide(4, 5), Vide(4, 6), Vide(4, 7)],
-            [Vide(5, 0), Vide(5, 1), Vide(5, 2), Vide(5, 3), Vide(5, 4), Vide(5, 5), Vide(5, 6), Vide(5, 7)],
-            [Pion(Color.BLANC, 6, 0), Pion(Color.BLANC, 6, 1), Pion(Color.BLANC, 6, 2), Pion(Color.BLANC, 6, 3),
-             Pion(Color.BLANC, 6, 4), Pion(Color.BLANC, 6, 5), Pion(Color.BLANC, 6, 6), Pion(Color.BLANC, 6, 7)],
-            [Tour(Color.BLANC, 7, 0), Cavalier(Color.BLANC, 7, 1), Fou(Color.BLANC, 7, 2), Dame(Color.BLANC, 7, 3),
-             Roi(Color.BLANC, 7, 4), Fou(Color.BLANC, 7, 5), Cavalier(Color.BLANC, 7, 6), Tour(Color.BLANC, 7, 7)]]
-
-        EchiquierNormal.historique_echiquier = [copy.deepcopy(EchiquierNormal.echiquier)]
-
-        EchiquierNormal.dernier_coup = None
-
-        EchiquierNormal.historique_coups = []
-
-        EchiquierNormal.piece_selectionne = EchiquierNormal.selected_piece_moves = None
-
-        EchiquierNormal.couleur_joueur_actuel = Color.BLANC
-
-        EchiquierNormal.index_historique = 0
-
+    def __del__(self):
+        pass
 
     # deplacer une piece
-    @staticmethod
-    def deplacer(oldL, oldC, newL, newC):
-        EchiquierNormal.echiquier[newL][newC] = EchiquierNormal.echiquier[oldL][oldC]
-        EchiquierNormal.echiquier[oldL][oldC] = Vide(oldL, oldC)
+    def deplacer(self, oldL, oldC, newL, newC):
+        self.echiquier[newL][newC] = self.echiquier[oldL][oldC]
+        self.echiquier[oldL][oldC] = Vide(oldL, oldC)
         # on met a jour la position de la piece deplace
-        EchiquierNormal.echiquier[newL][newC].ligne = newL
-        EchiquierNormal.echiquier[newL][newC].colonne = newC
-        EchiquierNormal.echiquier[newL][newC].nb_deplacements += 1
+        self.echiquier[newL][newC].ligne = newL
+        self.echiquier[newL][newC].colonne = newC
+        self.echiquier[newL][newC].nb_deplacements += 1
 
         #on inverse l'echiquier
-        EchiquierNormal.echiquier = EchiquierNormal.rotation_echiquier(EchiquierNormal.echiquier)
+        self.rotation_echiquier()
 
         # on met a jour l'historique
-        EchiquierNormal.historique_echiquier.append(copy.deepcopy(EchiquierNormal.echiquier))
-        EchiquierNormal.dernier_coup = (7 - oldL, 7 - oldC) , (7 - newL, 7 - newC)
-        EchiquierNormal.historique_coups.append(EchiquierNormal.dernier_coup)
-        EchiquierNormal.index_historique += 1
+        self.historique_echiquier.append(copy.deepcopy(self.echiquier))
+        self.dernier_coup = (7 - oldL, 7 - oldC) , (7 - newL, 7 - newC)
+        self.historique_coups.append(self.dernier_coup)
+        self.index_historique += 1
 
     # fonction pour inverser l'echiquier
-    @staticmethod
-    def rotation_echiquier(e):
+    def rotation_echiquier(self):
         for i in range(4):
             for j in range(8):
-                e[i][j], e[7 - i][7 - j] = e[7 - i][7 - j], e[i][j]
-                e[i][j].ligne = i
-                e[i][j].colonne = j
-                e[7 - i][7 - j].ligne = 7 - i
-                e[7 - i][7 - j].colonne = 7 - j
-        return e
+                self.echiquier[i][j], self.echiquier[7 - i][7 - j] = self.echiquier[7 - i][7 - j], self.echiquier[i][j]
+                self.echiquier[i][j].ligne = i
+                self.echiquier[i][j].colonne = j
+                self.echiquier[7 - i][7 - j].ligne = 7 - i
+                self.echiquier[7 - i][7 - j].colonne = 7 - j
 
     # retourne le roi d'une couleur
-    @staticmethod
-    def get_roi(echiquier, couleur):
-        for ligne in echiquier:
+    def get_roi(self, couleur):
+        for ligne in self.echiquier:
             for piece in ligne:
                 if isinstance(piece, Roi) and piece.couleur == couleur:
                     return piece
 
     # simule un déplacement
-    @staticmethod
-    def simuler_deplacement(echiquier, oldL, oldC, newL, newC):
-        echiquier_simulee = copy.deepcopy(echiquier)
-        echiquier_simulee[newL][newC] = echiquier_simulee[oldL][oldC]
-        echiquier_simulee[oldL][oldC] = Vide(oldL, oldC)
-
-        # on met a jour la position de la piece deplace
-        echiquier_simulee[newL][newC].ligne = newL
-        echiquier_simulee[newL][newC].colonne = newC
-
-        echiquier_simulee = EchiquierNormal.rotation_echiquier(echiquier_simulee)
+    def simuler_deplacement(self, oldL, oldC, newL, newC):
+        echiquier_simulee = EchiquierNormal(copy.deepcopy(self.echiquier))
+        echiquier_simulee.deplacer(oldL, oldC, newL, newC)
 
         return echiquier_simulee
 
     # gerer la promotion d'un pion
-    @staticmethod
-    def promotion_pion(piece, type):
+    def promotion_pion(self,piece, type):
         if type == Promotion.DAME:
-            EchiquierNormal.echiquier[piece.ligne][piece.colonne] = Dame(piece.couleur, piece.ligne, piece.colonne)
+            self.echiquier[piece.ligne][piece.colonne] = Dame(piece.couleur, piece.ligne, piece.colonne)
         elif type == Promotion.FOU:
-            EchiquierNormal.echiquier[piece.ligne][piece.colonne] = Fou(piece.couleur, piece.ligne, piece.colonne)
+            self.echiquier[piece.ligne][piece.colonne] = Fou(piece.couleur, piece.ligne, piece.colonne)
         elif type == Promotion.CAVALIER:
-            EchiquierNormal.echiquier[piece.ligne][piece.colonne] = Cavalier(piece.couleur, piece.ligne, piece.colonne)
+            self.echiquier[piece.ligne][piece.colonne] = Cavalier(piece.couleur, piece.ligne, piece.colonne)
         elif type == Promotion.TOUR:
-            EchiquierNormal.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
-        # on inverse l'echiquier
-        EchiquierNormal.echiquier = EchiquierNormal.rotation_echiquier(EchiquierNormal.echiquier)
+            self.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
 
-        EchiquierNormal.historique_echiquier[-1] = copy.deepcopy(EchiquierNormal.echiquier)
+        # on inverse l'echiquier
+        self.rotation_echiquier()
+
+        self.historique_echiquier[-1] = copy.deepcopy(self.echiquier)
 
     # methode qui retourne une liste de coups possibles pour le roque du roi
-    @staticmethod
-    def get_deplacement_roque():
-        e = EchiquierNormal.echiquier
+    def get_deplacement_roque(self):
         dep = []
-        roi = EchiquierNormal.get_roi(e, EchiquierNormal.couleur_joueur_actuel)
-        if roi.nb_deplacements > 0 or roi.est_en_echec(e):
+        roi = self.get_roi(self.couleur_joueur_actuel)
+        if roi.nb_deplacements > 0 or roi.est_en_echec(self):
             return dep
         roque = True
 
@@ -146,9 +111,9 @@ class EchiquierNormal:
         max_cases_right = 5 if roi.couleur == Color.BLANC else 4
 
         # Roque à gauche (petit roque si noir grand si blanc)
-        if isinstance(e[7][0], Tour) and e[7][0].nb_deplacements == 0:
+        if isinstance(self.echiquier[7][0], Tour) and self.echiquier[7][0].nb_deplacements == 0:
             for i in range(1, max_cases_left):
-                if not isinstance(e[7][i], Vide) or e[7][i].est_en_echec(e, EchiquierNormal.couleur_joueur_actuel):
+                if not isinstance(self.echiquier[7][i], Vide) or self.echiquier[7][i].est_en_echec(self, self.couleur_joueur_actuel):
                     roque = False
                     break
             if roque:
@@ -156,9 +121,9 @@ class EchiquierNormal:
 
         roque = True
         # Roque à droite (petit roque si blanc grand si noir)
-        if isinstance(e[7][7], Tour) and e[7][7].nb_deplacements == 0:
+        if isinstance(self.echiquier[7][7], Tour) and self.echiquier[7][7].nb_deplacements == 0:
             for i in [max_cases_right, 6]:
-                if not isinstance(e[7][i], Vide) or e[7][i].est_en_echec(e, EchiquierNormal.couleur_joueur_actuel):
+                if not isinstance(self.echiquier[7][i], Vide) or self.echiquier[7][i].est_en_echec(self, self.couleur_joueur_actuel):
                     roque = False
                     break
             if roque:
@@ -167,10 +132,8 @@ class EchiquierNormal:
         return dep
 
     # on roque
-    @staticmethod
-    def roquer(l, c):
-        echiquier = EchiquierNormal.echiquier
-        roi = EchiquierNormal.get_roi(echiquier, EchiquierNormal.couleur_joueur_actuel)
+    def roquer(self, l, c):
+        roi = self.get_roi(self.couleur_joueur_actuel)
         if roi.couleur == Color.BLANC:
             new_col_tour = 3 if c == 0 else 5
             new_col_roi = 2 if c == 0 else 6
@@ -181,59 +144,59 @@ class EchiquierNormal:
         old_col_tour = 0 if c == 0 else 7
         old_col_roi = roi.colonne
 
-        echiquier[l][new_col_roi] = echiquier[l][roi.colonne]
-        echiquier[l][new_col_roi].colonne = new_col_roi
-        echiquier[l][new_col_roi].nb_deplacements += 1
+        self.echiquier[l][new_col_roi] = self.echiquier[l][roi.colonne]
+        self.echiquier[l][new_col_roi].colonne = new_col_roi
+        self.echiquier[l][new_col_roi].nb_deplacements += 1
 
-        echiquier[l][new_col_tour] = echiquier[l][old_col_tour]
-        echiquier[l][new_col_tour].colonne = new_col_tour
-        echiquier[l][new_col_tour].nb_deplacements += 1
-        echiquier[l][old_col_tour] = Vide(l, old_col_tour)
-        echiquier[l][old_col_roi] = Vide(l, old_col_roi)
+        self.echiquier[l][new_col_tour] = self.echiquier[l][old_col_tour]
+        self.echiquier[l][new_col_tour].colonne = new_col_tour
+        self.echiquier[l][new_col_tour].nb_deplacements += 1
+        self.echiquier[l][old_col_tour] = Vide(l, old_col_tour)
+        self.echiquier[l][old_col_roi] = Vide(l, old_col_roi)
 
         # on inverse l'echiquier
-        EchiquierNormal.echiquier = EchiquierNormal.rotation_echiquier(EchiquierNormal.echiquier)
+        self.rotation_echiquier()
 
         # on ajoute l'echiquier dans l'historique
-        EchiquierNormal.historique_echiquier.append(copy.deepcopy(EchiquierNormal.echiquier))
-        EchiquierNormal.dernier_coup = (roi.ligne, 7 - old_col_roi), (roi.ligne, roi.colonne)
-        EchiquierNormal.historique_coups.append(EchiquierNormal.dernier_coup)
-        EchiquierNormal.index_historique += 1
+        self.historique_echiquier.append(copy.deepcopy(self.echiquier))
+        self.dernier_coup = (roi.ligne, 7 - old_col_roi), (roi.ligne, roi.colonne)
+        self.historique_coups.append(self.dernier_coup)
+        self.index_historique += 1
 
-    @staticmethod
-    def verifier_echec_et_mat(couleur):
+
+    def verifier_echec_et_mat(self, couleur):
         # pour un echec et mat, il faut que le roi soit en echec
-        if not EchiquierNormal.get_roi(EchiquierNormal.echiquier, couleur).est_en_echec(EchiquierNormal.echiquier):
+        if not self.get_roi(couleur).est_en_echec(self):
             return False
 
         # et il faut il n'y ait aucun déplacement possible
-        for ligne in EchiquierNormal.echiquier:
+        for ligne in self.echiquier:
             for piece in ligne:
                 # on ne traite que les pieces de la couleur du joueur
                 if isinstance(piece, Vide) or piece.couleur != couleur:
                     continue
 
-                dep_poss = piece.get_deplacements_possibles(EchiquierNormal.echiquier)
+                dep_poss = piece.get_deplacements_possibles(self)
 
                 # si la pièce peut se déplacer, ce n'est pas un échec et mat
                 if dep_poss != []:
                     return False
         return True
 
-    @staticmethod
-    def verifier_pat( couleur):
+
+    def verifier_pat(self, couleur):
            # pour un pat, il faut que le roi ne soit pas en echec
-            if EchiquierNormal.get_roi(EchiquierNormal.echiquier, couleur).est_en_echec(EchiquierNormal.echiquier):
+            if self.get_roi(couleur).est_en_echec(self):
                 return False
 
             # et il faut il n'y ait aucun déplacement possible
-            for ligne in EchiquierNormal.echiquier:
+            for ligne in self.echiquier:
                 for piece in ligne:
                     # on ne traite que les pieces de la couleur du joueur
                     if isinstance(piece, Vide) or piece.couleur != couleur:
                         continue
 
-                    dep_poss = piece.get_deplacements_possibles(EchiquierNormal.echiquier)
+                    dep_poss = piece.get_deplacements_possibles(self)
 
                     # si la pièce peut se déplacer, ce n'est pas un pat
                     if dep_poss != []:
@@ -241,10 +204,10 @@ class EchiquierNormal:
             return True
 
     # verifier si la partie est nulle par position morte
-    @staticmethod
-    def verifier_position_morte( couleur):
+
+    def verifier_position_morte(self, couleur):
         nb_cavalier = nb_fou = nb_pieces = 0
-        for ligne in EchiquierNormal.echiquier:
+        for ligne in self.echiquier:
             for piece in ligne:
                 # on compte le nombre de cavalier et de fou
                 if not isinstance(piece, Vide) and piece.couleur == couleur:
@@ -265,14 +228,14 @@ class EchiquierNormal:
         return False
 
     # verifier si la partie est nulle par repetition
-    @staticmethod
-    def verifier_repetition():
-        if(len(EchiquierNormal.historique_echiquier) < 10):
+
+    def verifier_repetition(self):
+        if(len(self.historique_echiquier) < 10):
             return False
         cpt = 0
         # on ne regarde que les 8 derniers coups
-        for echiquier in EchiquierNormal.historique_echiquier[-10:]:
-            if echiquier == EchiquierNormal.echiquier:
+        for echiquier in self.historique_echiquier[-10:]:
+            if echiquier == self.echiquier:
                 cpt += 1
         if cpt >= 3:
             return True
@@ -280,34 +243,34 @@ class EchiquierNormal:
         return False
 
     # retourne vrai si on est au dernier coup de l'historique, faux sinon
-    @staticmethod
-    def retour_deplacement():
-        index = EchiquierNormal.index_historique
+
+    def retour_deplacement(self):
+        index = self.index_historique
         if index > 0:
-            EchiquierNormal.echiquier = EchiquierNormal.historique_echiquier[index - 1]
-            EchiquierNormal.index_historique -= 1
+            self.echiquier = self.historique_echiquier[index - 1]
+            self.index_historique -= 1
             # si on est pas au premier coup, on met a jour le dernier coup pour pouvoir l'afficher
             if index-1 == 0:
-                EchiquierNormal.dernier_coup = None
+                self.dernier_coup = None
             else:
-                EchiquierNormal.dernier_coup = EchiquierNormal.historique_coups[index - 2]
+                self.dernier_coup = self.historique_coups[index - 2]
             return False
-        if index == 0 and len(EchiquierNormal.historique_echiquier) ==1:
+        if index == 0 and len(self.historique_echiquier) ==1:
             return True
         return False
 
     # retourne vrai si on est au dernier coup de l'historique, faux sinon
-    @staticmethod
-    def avancer_deplacement():
-        index = EchiquierNormal.index_historique
-        if index < len(EchiquierNormal.historique_echiquier)-1:
-            EchiquierNormal.echiquier = EchiquierNormal.historique_echiquier[index + 1]
-            EchiquierNormal.index_historique += 1
+
+    def avancer_deplacement(self):
+        index = self.index_historique
+        if index < len(self.historique_echiquier)-1:
+            self.echiquier = self.historique_echiquier[index + 1]
+            self.index_historique += 1
             # on met a jour le dernier coup pour pouvoir l'afficher
-            EchiquierNormal.dernier_coup = EchiquierNormal.historique_coups[index]
-            if index+1 == len(EchiquierNormal.historique_echiquier) - 1:
+            self.dernier_coup = self.historique_coups[index]
+            if index+1 == len(self.historique_echiquier) - 1:
                 return True
 
-        if index == len(EchiquierNormal.historique_echiquier)-1:
+        if index == len(self.historique_echiquier)-1:
             return True
         return False

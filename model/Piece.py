@@ -1,4 +1,4 @@
-import model.EchiquierNormal as echiq
+
 class Piece:
 
     def __init__(self, coul, lin, col):
@@ -20,13 +20,13 @@ class Piece:
         pass
 
     # renvoie la liste des deplacements de la piece en tenant compte des echecs
-    def get_deplacements_possibles(self, echiquier):
-        dep_poss = self.get_all_deplacements(echiquier)
+    def get_deplacements_possibles(self, model):
+        dep_poss = self.get_all_deplacements(model)
         # pour chaque deplacement possible on verifie si le roi sera en echec apres celui-ci
         for x, y in dep_poss.copy():
-            echiquier_simulee = echiq.EchiquierNormal.simuler_deplacement(echiquier, self.ligne, self.colonne, x, y)
+            echiquier_simulee = model.simuler_deplacement(self.ligne, self.colonne, x, y)
             # on recupere le roi et on verifie si il est en echec
-            roi = echiq.EchiquierNormal.get_roi(echiquier_simulee, self.couleur)
+            roi = echiquier_simulee.get_roi(self.couleur)
             if roi.est_en_echec(echiquier_simulee):
                 dep_poss.remove((x, y))
         return dep_poss

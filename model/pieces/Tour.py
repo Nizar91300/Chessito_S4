@@ -8,8 +8,9 @@ class Tour(Piece):
         super().__init__(coul, lin, col)
 
     # méthode qui retourne les déplacements possibles
-    def get_all_deplacements(self, echiquier):
+    def get_all_deplacements(self, model):
         deplacements = []
+        echiquier = model.echiquier
 
         # directions de la tour
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
