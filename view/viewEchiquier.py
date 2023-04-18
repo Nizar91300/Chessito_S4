@@ -160,13 +160,13 @@ class ViewEchiquier:
             frame = Frame(self.fenetre, width=60, height=30, bg=BG_COLOR, bd=0)
             frame.grid(row=0, column=int(i/2)+1, sticky="S")
             self.frames_blancs.append( frame )
-            lbl1 = Label( frame, image= self.imgs_mangees_haut[int(i/2)] , bg=BG_COLOR, bd=0)
+            lbl1 = Label( frame, image= self.imgs_mangees_haut[i] , bg=BG_COLOR, bd=0)
             lbl1.pack(side=tkinter.LEFT)
 
             # Vérification s'il y a une deuxième image
             if i + 1 < len(p_mangees_haut):
                 # Chargement de la deuxième image
-                lbl2 = Label(frame, image=self.imgs_mangees_haut[int(i / 2) + 1], bg=BG_COLOR, bd=0)
+                lbl2 = Label(frame, image=self.imgs_mangees_haut[i + 1], bg=BG_COLOR, bd=0)
                 lbl2.pack(side=tkinter.RIGHT)
 
     # affichage le choix de la piece pour la promotion
