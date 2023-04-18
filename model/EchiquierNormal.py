@@ -37,6 +37,9 @@ class EchiquierNormal:
         self.piece_selectionne = self.selected_piece_moves = None
         self.couleur_joueur_actuel = Color.BLANC
         self.index_historique = 0
+        # liste des pieces mangees par les blancs et noirs
+        self.pieces_mangees_blanc = []
+        self.pieces_mangees_noir = []
         self.isAi = isAI
 
     # fonction pour la suppression de l'objet
@@ -52,6 +55,12 @@ class EchiquierNormal:
 
     # deplacer une piece
     def deplacer(self, oldL, oldC, newL, newC):
+        if not isinstance(self.echiquier[newL][newC], Vide):
+            if self.echiquier[oldL][oldC].couleur == Color.NOIR:
+                self.pieces_mangees_noir.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )
+            else:
+                self.pieces_mangees_blanc.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )
+
         self.echiquier[newL][newC] = self.echiquier[oldL][oldC]
         self.echiquier[oldL][oldC] = Vide(oldL, oldC)
         # on met a jour la position de la piece deplace
@@ -149,7 +158,7 @@ class EchiquierNormal:
 
         roque = True
         # Roque à droite (petit roque si blanc grand si noir)
-        if isinstance(self.echiquier[pos][7], Tour) and self.echiquier[pos][pos].nb_deplacements == 0:
+        if isinstance(self.echiquier[pos][7], Tour) and self.echiquier[pos][7].nb_deplacements == 0:
             for i in [max_cases_right, 6]:
                 if not isinstance(self.echiquier[pos][i], Vide) or self.echiquier[pos][i].est_en_echec(self, self.couleur_joueur_actuel):
                     roque = False
@@ -242,23 +251,24 @@ class EchiquierNormal:
     # verifier si la partie est nulle par position morte
 
     def verifier_position_morte(self, couleur):
-        nb_cavalier = nb_fou = nb_pieces = 0
+        nb_cavalier = nb_fou = nb_allie = nb_adversaire = 0
         for ligne in self.echiquier:
             for piece in ligne:
                 # on compte le nombre de cavalier et de fou
-                if not isinstance(piece, Vide) and piece.couleur == couleur:
-                    if isinstance(piece, Cavalier) :
-                        nb_cavalier += 1
-                    if isinstance(piece, Fou):
-                        nb_fou += 1
+                if not isinstance(piece, Vide):
+                    if piece.couleur == couleur:
+                        if isinstance(piece, Cavalier) :
+                            nb_cavalier += 1
+                        if isinstance(piece, Fou):
+                            nb_fou += 1
+                        nb_allie += 1
+                    else:
+                        nb_adversaire += 1
 
-                    nb_pieces+=1
-
-
-        if nb_pieces == 1:
+        if nb_allie == 1 and nb_adversaire == 1:
             return True
         # si il y a 1 seule cavaliers ou 1 seule fou separement, la partie est nulle
-        if nb_pieces == 2 and ( (nb_cavalier == 1 and nb_fou==0 ) or (nb_fou == 1 and nb_cavalier==0) ):
+        if nb_allie == 2 and nb_adversaire == 1 and ( (nb_cavalier == 1 and nb_fou==0 ) or (nb_fou == 1 and nb_cavalier==0) ):
             return True
 
         return False
@@ -310,3 +320,14 @@ class EchiquierNormal:
         if index == len(self.historique_echiquier)-1:
             return True
         return False
+
+    # retourne les pions mangees a affiches en haut de l'echiquier
+    def get_pieces_mangees_haut(self):
+        if not self.isAi:
+            return self.pieces_mangees_blanc if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_noir
+        return self.pieces_mangees_noir if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_blanc
+
+    def get_pieces_mangees_bas(self):
+        if not self.isAi:
+            return self.pieces_mangees_noir if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_blanc
+        return self.pieces_mangees_blanc if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_noir

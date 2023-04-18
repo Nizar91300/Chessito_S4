@@ -148,6 +148,18 @@ class ViewEchiquier:
                 if self.cases[i][j]['state'] == 'disabled':
                     self.cases[i][j].config(state='normal')
 
+        p_mangees_haut = self.model.get_pieces_mangees_haut()
+        self.imgs_mangees_haut = []
+        for i in range(len(p_mangees_haut)):
+            img = self.images[p_mangees_haut[i]].copy()
+            img.thumbnail((30, 30), PIL.Image.ANTIALIAS)
+            self.imgs_mangees_haut.append(PIL.ImageTk.PhotoImage( img))
+            
+
+
+        for i in range(len(p_mangees_haut)):
+            Label(self.fenetre, image= self.imgs_mangees_haut[i]).grid(row=0, column=i+1)
+
     # affichage le choix de la piece pour la promotion
     def afficher_promotion(self, piece):
         # on desactive les labels
