@@ -205,7 +205,6 @@ class EchiquierNormal:
                     return False
         return True
 
-
     def verifier_pat(self, couleur):
            # pour un pat, il faut que le roi ne soit pas en echec
             if self.get_roi(couleur).est_en_echec(self):
