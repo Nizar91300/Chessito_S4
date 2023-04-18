@@ -12,7 +12,7 @@ from model.constantes import Color, Promotion
 
 # classe qui contine les attributs statiques du modele
 class EchiquierNormal:
-    def __init__(self, *args):
+    def __init__(self, isAI, *args):
         # si on donne un echiquier en parametre on l'utilise sinon on cree un echiquier normal
         if len(args) == 0:
             self.echiquier = [
@@ -37,6 +37,7 @@ class EchiquierNormal:
         self.piece_selectionne = self.selected_piece_moves = None
         self.couleur_joueur_actuel = Color.BLANC
         self.index_historique = 0
+        self.isAi = isAI
 
     # fonction pour la suppression de l'objet
     def __del__(self):
@@ -58,14 +59,21 @@ class EchiquierNormal:
         self.echiquier[newL][newC].colonne = newC
         self.echiquier[newL][newC].nb_deplacements += 1
 
-        #on inverse l'echiquier
-        self.rotation_echiquier()
+        # on verifie si on doit retourner l'echiquier
+        if self.isAi:
+            self.rotation_echiquier()
 
-        # on met a jour l'historique
-        self.historique_echiquier.append(copy.deepcopy(self.echiquier))
-        self.dernier_coup = (7 - oldL, 7 - oldC) , (7 - newL, 7 - newC)
+            # on met a jour l'historique
+            self.historique_echiquier.append(copy.deepcopy(self.echiquier))
+            self.dernier_coup = (7 - oldL, 7 - oldC) , (7 - newL, 7 - newC)
+        else:
+            # on met a jour l'historique
+            self.historique_echiquier.append(copy.deepcopy(self.echiquier))
+            self.dernier_coup = (oldL, oldC), (newL, newC)
+
         self.historique_coups.append(self.dernier_coup)
         self.index_historique += 1
+
 
     # fonction pour inverser l'echiquier
     def rotation_echiquier(self):
@@ -86,7 +94,7 @@ class EchiquierNormal:
 
     # simule un déplacement
     def simuler_deplacement(self, oldL, oldC, newL, newC):
-        echiquier_simulee = EchiquierNormal(copy.deepcopy(self.echiquier))
+        echiquier_simulee = EchiquierNormal(self.isAi, copy.deepcopy(self.echiquier))
         echiquier_simulee.deplacer(oldL, oldC, newL, newC)
 
         return echiquier_simulee
@@ -103,7 +111,8 @@ class EchiquierNormal:
             self.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
 
         # on inverse l'echiquier
-        self.rotation_echiquier()
+        if self.isAi:
+            self.rotation_echiquier()
 
         self.historique_echiquier[-1] = copy.deepcopy(self.echiquier)
 
@@ -163,11 +172,16 @@ class EchiquierNormal:
         self.echiquier[l][old_col_roi] = Vide(l, old_col_roi)
 
         # on inverse l'echiquier
-        self.rotation_echiquier()
+        if self.isAi:
+            self.rotation_echiquier()
 
-        # on ajoute l'echiquier dans l'historique
-        self.historique_echiquier.append(copy.deepcopy(self.echiquier))
-        self.dernier_coup = (roi.ligne, 7 - old_col_roi), (roi.ligne, roi.colonne)
+            # on ajoute l'echiquier dans l'historique
+            self.historique_echiquier.append(copy.deepcopy(self.echiquier))
+            self.dernier_coup = (roi.ligne, 7 - old_col_roi), (roi.ligne, roi.colonne)
+        else:
+            self.historique_echiquier.append(copy.deepcopy(self.echiquier))
+            self.dernier_coup = (roi.ligne, old_col_roi), (roi.ligne, roi.colonne)
+
         self.historique_coups.append(self.dernier_coup)
         self.index_historique += 1
 

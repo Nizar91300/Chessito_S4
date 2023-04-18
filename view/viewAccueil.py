@@ -43,7 +43,7 @@ class ViewAccueil:
         if mode == "Atomic":
             controller = ControllerNormal(EchiquierAtomic())
         else:
-            controller = ControllerNormal(EchiquierNormal())
+            controller = ControllerNormal(EchiquierNormal(False))
 
         controller.run()
 

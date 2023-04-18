@@ -22,9 +22,13 @@ class Pion(Piece):
         echiquier = modele.echiquier
 
         # direction de déplacement du pion
-        direction = Pion.UP
-        # place initiale du pion pour pouvoir se deplacer de 2 cases
-        place_initiale = 6
+        if modele.isAi:
+            direction = Pion.UP
+            place_initiale = 6
+        else:
+            direction = Pion.UP if self.couleur == Color.BLANC else Pion.DOWN
+            # place initiale du pion pour pouvoir se deplacer de 2 cases
+            place_initiale = 6 if self.couleur == Color.BLANC else 1
 
         # si la premiere case en face est vide
         x = self.ligne + direction
