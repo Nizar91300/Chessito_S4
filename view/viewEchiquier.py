@@ -168,6 +168,11 @@ class ViewEchiquier:
                 # Chargement de la deuxième image
                 lbl2 = Label(frame, image=self.imgs_mangees_haut[i + 1], bg=BG_COLOR, bd=0)
                 lbl2.pack(side=tkinter.RIGHT)
+            else:
+                # Création d'une image vide
+                img = PIL.ImageTk.PhotoImage(image=PIL.Image.new("RGB", (30, 30), BG_COLOR))
+                lbl2 = Label(frame, image=img, bg=BG_COLOR, bd=0)
+                lbl2.pack(side=tkinter.RIGHT)
 
     # affichage le choix de la piece pour la promotion
     def afficher_promotion(self, piece):
