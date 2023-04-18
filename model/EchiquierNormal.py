@@ -60,7 +60,7 @@ class EchiquierNormal:
         self.echiquier[newL][newC].nb_deplacements += 1
 
         # on verifie si on doit retourner l'echiquier
-        if self.isAi:
+        if not self.isAi:
             self.rotation_echiquier()
 
             # on met a jour l'historique
@@ -91,6 +91,7 @@ class EchiquierNormal:
             for piece in ligne:
                 if isinstance(piece, Roi) and piece.couleur == couleur:
                     return piece
+        return None
 
     # simule un déplacement
     def simuler_deplacement(self, oldL, oldC, newL, newC):
@@ -111,7 +112,7 @@ class EchiquierNormal:
             self.echiquier[piece.ligne][piece.colonne] = Tour(piece.couleur, piece.ligne, piece.colonne)
 
         # on inverse l'echiquier
-        if self.isAi:
+        if not self.isAi:
             self.rotation_echiquier()
 
         self.historique_echiquier[-1] = copy.deepcopy(self.echiquier)
@@ -124,7 +125,7 @@ class EchiquierNormal:
             return dep
         roque = True
 
-        if self.isAi:
+        if not self.isAi:
             max_cases_left = 4 if roi.couleur == Color.BLANC else 3
             max_cases_right = 5 if roi.couleur == Color.BLANC else 4
             pos = 7
@@ -161,7 +162,7 @@ class EchiquierNormal:
     # on roque
     def roquer(self, l, c):
         roi = self.get_roi(self.couleur_joueur_actuel)
-        if self.isAi:
+        if not self.isAi:
             if roi.couleur == Color.BLANC:
                 new_col_tour = 3 if c == 0 else 5
                 new_col_roi = 2 if c == 0 else 6
@@ -186,7 +187,7 @@ class EchiquierNormal:
         self.echiquier[l][old_col_roi] = Vide(l, old_col_roi)
 
         # on inverse l'echiquier
-        if self.isAi:
+        if not self.isAi:
             self.rotation_echiquier()
 
             # on ajoute l'echiquier dans l'historique
