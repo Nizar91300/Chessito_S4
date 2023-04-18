@@ -1,7 +1,7 @@
 import os
 import tkinter
 from functools import partial
-from tkinter import messagebox, Tk, Button, Label
+from tkinter import messagebox, Tk, Button, Label, Frame
 import PIL.Image, PIL.ImageTk, PIL.ImageFilter, PIL.ImageDraw
 
 from model.EchiquierNormal import EchiquierNormal as Echiquier
@@ -154,11 +154,20 @@ class ViewEchiquier:
             img = self.images[p_mangees_haut[i]].copy()
             img.thumbnail((30, 30), PIL.Image.ANTIALIAS)
             self.imgs_mangees_haut.append(PIL.ImageTk.PhotoImage( img))
-            
 
+        self.frames_blancs = []
+        for i in range(0, len(p_mangees_haut), 2):
+            frame = Frame(self.fenetre, width=60, height=30, bg=BG_COLOR, bd=0)
+            frame.grid(row=0, column=int(i/2)+1, sticky="S")
+            self.frames_blancs.append( frame )
+            lbl1 = Label( frame, image= self.imgs_mangees_haut[int(i/2)] , bg=BG_COLOR, bd=0)
+            lbl1.pack(side=tkinter.LEFT)
 
-        for i in range(len(p_mangees_haut)):
-            Label(self.fenetre, image= self.imgs_mangees_haut[i]).grid(row=0, column=i+1)
+            # Vérification s'il y a une deuxième image
+            if i + 1 < len(p_mangees_haut):
+                # Chargement de la deuxième image
+                lbl2 = Label(frame, image=self.imgs_mangees_haut[int(i / 2) + 1], bg=BG_COLOR, bd=0)
+                lbl2.pack(side=tkinter.RIGHT)
 
     # affichage le choix de la piece pour la promotion
     def afficher_promotion(self, piece):
