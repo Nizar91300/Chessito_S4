@@ -22,7 +22,7 @@ class Pion(Piece):
         echiquier = modele.echiquier
 
         # direction de déplacement du pion
-        if modele.isAi:
+        if not modele.isAi:
             direction = Pion.UP
             place_initiale = 6
         else:
