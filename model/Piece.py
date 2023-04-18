@@ -27,7 +27,7 @@ class Piece:
             echiquier_simulee = model.simuler_deplacement(self.ligne, self.colonne, x, y)
             # on recupere le roi et on verifie si il est en echec
             roi = echiquier_simulee.get_roi(self.couleur)
-            if roi.est_en_echec(echiquier_simulee):
+            if roi is None or roi.est_en_echec(echiquier_simulee):
                 dep_poss.remove((x, y))
             # on supprime l'objet echiquier_simulee
             del echiquier_simulee

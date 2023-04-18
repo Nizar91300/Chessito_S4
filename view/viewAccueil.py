@@ -40,8 +40,8 @@ class ViewAccueil:
     def change_mode(self, mode):
         self.fenetre.destroy()
 
-        if mode == "Atomic":
-            controller = ControllerNormal(EchiquierAtomic())
+        if mode == "atomic":
+            controller = ControllerNormal(EchiquierAtomic(True))
         else:
             controller = ControllerNormal(EchiquierNormal(False))
 
