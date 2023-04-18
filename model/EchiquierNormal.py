@@ -124,39 +124,53 @@ class EchiquierNormal:
             return dep
         roque = True
 
-        max_cases_left = 4 if roi.couleur == Color.BLANC else 3
-        max_cases_right = 5 if roi.couleur == Color.BLANC else 4
+        if self.isAi:
+            max_cases_left = 4 if roi.couleur == Color.BLANC else 3
+            max_cases_right = 5 if roi.couleur == Color.BLANC else 4
+            pos = 7
+        else:
+            max_cases_left = 4
+            max_cases_right = 5
+            pos = 7 if roi.couleur == Color.BLANC else 0
 
         # Roque à gauche (petit roque si noir grand si blanc)
-        if isinstance(self.echiquier[7][0], Tour) and self.echiquier[7][0].nb_deplacements == 0:
+        if isinstance(self.echiquier[pos][0], Tour) and self.echiquier[pos][0].nb_deplacements == 0:
             for i in range(1, max_cases_left):
-                if not isinstance(self.echiquier[7][i], Vide) or self.echiquier[7][i].est_en_echec(self, self.couleur_joueur_actuel):
+
+                if not isinstance(self.echiquier[pos][i], Vide) or self.echiquier[pos][i].est_en_echec(self, self.couleur_joueur_actuel):
+                    print("piece = ",type(self.echiquier[pos][i]).__name__)
+                    if isinstance(self.echiquier[pos][i], Vide):
+                        print("echec = ",self.echiquier[pos][i].est_en_echec(self, self.couleur_joueur_actuel))
                     roque = False
                     break
             if roque:
-                dep += [(7, 0)]
+                dep += [(pos, 0)]
 
         roque = True
         # Roque à droite (petit roque si blanc grand si noir)
-        if isinstance(self.echiquier[7][7], Tour) and self.echiquier[7][7].nb_deplacements == 0:
+        if isinstance(self.echiquier[pos][7], Tour) and self.echiquier[pos][pos].nb_deplacements == 0:
             for i in [max_cases_right, 6]:
-                if not isinstance(self.echiquier[7][i], Vide) or self.echiquier[7][i].est_en_echec(self, self.couleur_joueur_actuel):
+                if not isinstance(self.echiquier[pos][i], Vide) or self.echiquier[pos][i].est_en_echec(self, self.couleur_joueur_actuel):
                     roque = False
                     break
             if roque:
-                dep += [(7, 7)]
+                dep += [(pos, 7)]
 
         return dep
 
     # on roque
     def roquer(self, l, c):
         roi = self.get_roi(self.couleur_joueur_actuel)
-        if roi.couleur == Color.BLANC:
+        if self.isAi:
+            if roi.couleur == Color.BLANC:
+                new_col_tour = 3 if c == 0 else 5
+                new_col_roi = 2 if c == 0 else 6
+            else:
+                new_col_tour = 2 if c == 0 else 4
+                new_col_roi = 1 if c == 0 else 5
+        else:
             new_col_tour = 3 if c == 0 else 5
             new_col_roi = 2 if c == 0 else 6
-        else:
-            new_col_tour = 2 if c == 0 else 4
-            new_col_roi = 1 if c == 0 else 5
 
         old_col_tour = 0 if c == 0 else 7
         old_col_roi = roi.colonne
