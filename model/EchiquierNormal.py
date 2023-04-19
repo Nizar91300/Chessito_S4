@@ -258,7 +258,7 @@ class EchiquierNormal:
                 # on compte le nombre de cavalier et de fou
                 if not isinstance(piece, Vide):
                     if piece.couleur == couleur:
-                        if isinstance(piece, Cavalier) :
+                        if isinstance(piece, Cavalier):
                             nb_cavalier += 1
                         if isinstance(piece, Fou):
                             nb_fou += 1
@@ -313,7 +313,7 @@ class EchiquierNormal:
         if index < len(self.historique_echiquier)-1:
             self.echiquier = self.historique_echiquier[index + 1]
             self.index_historique += 1
-            # on met a jour le dernier coup pour pouvoir l'afficher
+            # on met à jour le dernier coup pour pouvoir l'afficher
             self.dernier_coup = self.historique_coups[index]
             if index+1 == len(self.historique_echiquier) - 1:
                 return True
@@ -322,7 +322,7 @@ class EchiquierNormal:
             return True
         return False
 
-    # retourne les pions mangees a affiches en haut de l'echiquier
+    # Retourne les pions mangés à affiches en haut de l'échiquier
     def get_pieces_mangees_haut(self):
         if self.isAi:
             return self.pieces_mangees_noir
