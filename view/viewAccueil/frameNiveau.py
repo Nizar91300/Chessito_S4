@@ -48,8 +48,8 @@ class FrameNiveau(tk.Frame):
         lblMenu.pack(padx=10, pady=10)
 
         # bouton pour revenir à la page précédente.
-        btnRetour = ttk.Button(FramePrincipale, text='Retour', command=lambda: controller.show_frame("Classique"))
-        btnRetour.pack(side=BOTTOM, pady=10)
+        btnRetour = ttk.Button(FramePrincipale, text='Retour', command=lambda: controller.show_frame(self.titre.split('N')[0]))
+        btnRetour.pack(side=BOTTOM, pady=10,ipadx=15)
         btnRetour.configure(style='TButton')
 
         # frame FrameChoixJoueur dans FramePrincipale.
@@ -57,17 +57,17 @@ class FrameNiveau(tk.Frame):
         FrameChoixJoueur.pack(padx=83, pady=40)
 
         # boutons pour les modes de jeu.
-        btnFacile = ttk.Button(FrameChoixJoueur, text='Facile', command=lambda: controller.show_frame(ClassiqueFacile))
-        btnIntermediaire = ttk.Button(FrameChoixJoueur, text='Intermédiaire', command=lambda: controller.show_frame(ClassiqueMoyen))
-        btnDifficile = ttk.Button(FrameChoixJoueur, text='Difficile', command=lambda: controller.show_frame(ClassiqueDifficile))
+        btnFacile = ttk.Button(FrameChoixJoueur, text='Facile', command=lambda: controller.partie_bot(self.titre.split('N')[0], "Facile"))
+        btnIntermediaire = ttk.Button(FrameChoixJoueur, text='Intermédiaire', command=lambda: controller.partie_bot(self.titre.split('N')[0], "Intermédiare"))
+        btnDifficile = ttk.Button(FrameChoixJoueur, text='Difficile', command=lambda: controller.partie_bot(self.titre.split('N')[0], "Difficile"))
 
         # ajout des boutons pour les modes de jeu dans la FrameChoixJoueur.
-        btnFacile.pack(ipady=15, fill=BOTH, expand=True)
+        btnFacile.pack(ipady=15, ipadx=15, fill=BOTH, expand=True)
         btnFacile.configure(style='TButton')
 
-        btnIntermediaire.pack(ipady=15, pady=20, fill=BOTH, expand=True)
+        btnIntermediaire.pack(ipady=15,ipadx=15, pady=20, fill=BOTH, expand=True)
         btnIntermediaire.configure(style='TButton')
 
-        btnDifficile.pack(ipady=15, fill=BOTH, expand=True)
+        btnDifficile.pack(ipady=15,ipadx=15, fill=BOTH, expand=True)
         btnDifficile.configure(style='TButton')
 

@@ -41,9 +41,9 @@ class ViewAccueil:
         self.fenetre.destroy()
 
         if mode == "atomic":
-            controller = ControllerNormal(EchiquierAtomic(True))
+            controller = ControllerNormal(EchiquierAtomic(True, 0), self.fenetre)
         else:
-            controller = ControllerNormal(EchiquierNormal(False))
+            controller = ControllerNormal(EchiquierNormal(False, 0), Tk())
 
         controller.run()
 

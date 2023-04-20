@@ -3,10 +3,10 @@ from tkinter import Image, CENTER, Frame, RIDGE, Label, ttk, BOTTOM, BOTH
 import tkinter as tk
 from PIL import ImageTk
 import PIL.Image
-from model.constantes import CASE_BLANCHE, GRIS
+from model.constantes import CASE_BLANCHE, CASE_NOIRE, GRIS
 
-# Page Classique
-class FrameNbJoueur(tk.Frame):
+# Page de choix du temps de la partie Classique
+class FrameTimer(tk.Frame):
     def __init__(self, parent, controller, titre):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -31,7 +31,7 @@ class FrameNbJoueur(tk.Frame):
         # centrer FramePrincipale au milieu de la fenêtre principale.
         FramePrincipale.place(relx=0.5, rely=0.5, anchor=CENTER)
 
-        # insérer le logo du jeu dans FramePrincipale
+        # insérer le logo du jeu dans FramePrincipale.
         # Ouvrir l'image avec PIL
         logo_image = PIL.Image.open('images/chessito_logo.png')
 
@@ -44,27 +44,33 @@ class FrameNbJoueur(tk.Frame):
         label.pack()
 
         # ajout d'un label pour le titre du FrameChoixJoueur.
-        lblMenu = Label(FramePrincipale, text=self.titre, bg=GRIS, fg=CASE_BLANCHE, font=('Arial', 24))
+        lblMenu = Label(FramePrincipale, text=self.titre.split('N')[0], bg=GRIS, fg=CASE_BLANCHE, font=('Arial', 24))
         lblMenu.pack(padx=10, pady=10)
 
         # bouton pour revenir à la page précédente.
-        btnRetour = ttk.Button(FramePrincipale, text='Retour', command=lambda: controller.show_frame("Accueil"))
+        btnRetour = ttk.Button(FramePrincipale, text='Retour', command=lambda: controller.show_frame("Classique"))
         btnRetour.pack(side=BOTTOM, pady=10)
         btnRetour.configure(style='TButton')
 
-        # frame FrameChoixJoueur dans FramePrincipale
-        FrameChoixJoueur = Frame(FramePrincipale, bg=GRIS)
-        FrameChoixJoueur.pack(padx=77, pady=46)
+        # frame FrameChoixTemps dans FramePrincipale.
+        FrameChoixTemps = Frame(FramePrincipale, bg=GRIS)
+        FrameChoixTemps.pack(padx=83, pady=40)
 
-        # boutons pour le choix des joueurs
-        btnUnJoueur = ttk.Button(FrameChoixJoueur, text='1 vs Computer',
-                                 command=lambda: controller.show_frame(self.titre+"Niveau"))
-        btnDeuxJoueurs = ttk.Button(FrameChoixJoueur, text='1 vs 1',
-                                    command=lambda: controller.show_frame(self.titre+"NiveauTimer"))
+        # Durée de temps initiale
+        self.temps_restant = 0
 
-        # ajout des boutons pour les modes de jeu dans la FrameChoixJoueur.
-        btnUnJoueur.pack(ipady=15, fill=BOTH, expand=True)
-        btnUnJoueur.configure(style='TButton')
+        # Créer les temps prédéfinis
+        self.temps = [
+            ('3 min', 3, 180),
+            ('5 min', 5, 300),
+            ('10 min', 10, 600),
+            ('20 min', 20, 1200),
+            ('30 min', 30, 1800),
+            ('60 min', 60, 3600)
+        ]
 
-        btnDeuxJoueurs.pack(ipady=15, pady=50, fill=BOTH, expand=True)
-        btnDeuxJoueurs.configure(style='TButton')
+        # Ajouter les boutons de choix de temps
+        for i, (temps_label, temps_minutes, temps_secondes) in enumerate(self.temps):
+            bouton_temps = ttk.Button(FrameChoixTemps, text=temps_label, command=lambda: controller.show_frame(ClassiqueGame))
+            bouton_temps.grid(row=i // 2, column=i % 2, padx=5, pady=5)
+            bouton_temps.configure(style='TButton')

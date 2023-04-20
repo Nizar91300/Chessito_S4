@@ -1,11 +1,12 @@
+import model.EchiquierAtomic
 from model.constantes import Color, FinPartie
 from model.pieces.Pion import Pion
 from model.pieces.Vide import Vide
 from view.viewEchiquier import ViewEchiquier as View
 
 class ControllerNormal:
-    def __init__(self, model):
-        self.view = View(self, model)
+    def __init__(self, model, fenetre):
+        self.view = View(self, model, fenetre)
         self.model = model
 
     # lancer l'application
@@ -62,7 +63,9 @@ class ControllerNormal:
             # on change de joueur
             self.model.couleur_joueur_actuel = Color.NOIR if self.model.couleur_joueur_actuel == Color.BLANC else Color.BLANC
             # on verifie si c'est la fin de la partie
-            self.verifier_fin_de_partie()
+            self.verifier_fin_de_partie(self.model.couleur_joueur_actuel)
+            if isinstance(self.model, model.EchiquierAtomic.EchiquierAtomic):
+                self.verifier_fin_de_partie(Color.BLANC if self.model.couleur_joueur_actuel == Color.NOIR else Color.NOIR)
             return
 
         # si on clique sur une autre piece on cache les deplacements de l'ancienne piece
@@ -77,18 +80,18 @@ class ControllerNormal:
         self.view.update_frame()
         self.view.cacher_promotion()
 
-    def verifier_fin_de_partie(self):
+    def verifier_fin_de_partie(self, couleur):
         # cas de l'echec et mat
-        if self.model.verifier_echec_et_mat(self.model.couleur_joueur_actuel):
-            coulGagnant = Color.NOIR if self.model.couleur_joueur_actuel == Color.BLANC else Color.BLANC
+        if self.model.verifier_echec_et_mat(couleur):
+            coulGagnant = Color.NOIR if couleur == Color.BLANC else Color.BLANC
             self.view.afficher_fin_de_partie(coulGagnant, FinPartie.ECHEC_ET_MAT)
             return
         # cas du pat
-        if self.model.verifier_pat(self.model.couleur_joueur_actuel):
+        if self.model.verifier_pat(couleur):
             self.view.afficher_fin_de_partie(None, FinPartie.PAT)
             return
         # cas position morte
-        if self.model.verifier_position_morte(self.model.couleur_joueur_actuel):
+        if self.model.verifier_position_morte(couleur):
             self.view.afficher_fin_de_partie(None, FinPartie.POSITION_MORTE)
             return
 

@@ -1,8 +1,6 @@
 from model.Piece import Piece
 from model.pieces.Vide import Vide
 from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX
-import model.EchiquierNormal as echiq
-
 
 class Roi(Piece):
     # constructeur

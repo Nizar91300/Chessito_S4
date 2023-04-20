@@ -49,9 +49,14 @@ class FrameAccueil(tk.Frame):
         btnQuitter = ttk.Button(FramePrincipale, text='Quitter', command=self.quit)
 
         style = ttk.Style()
+
         # Configuration des couleurs pour les différents états du bouton quand le curseur passe au-dessus du bouton.
-        style.map('TButton', foreground=[('active', 'red'), ('!active', 'black')], background=[('active', 'black'), ('!active', 'SystemButtonFace')])
-        style.configure('TButton', background=CASE_BLANCHE, foreground=CASE_NOIRE, activebackground=CASE_NOIRE, anchor=CENTER, borderwidth=0, font=('Arial', 20))
+        style.map('TButton', foreground=[('active', 'red'), ('!active', 'black')],
+                  background=[('active', 'black'), ('!active', 'SystemButtonFace')])
+
+        # Définir la configuration de style une fois pour toutes
+        style.configure('TButton', bordercolor="#fff", background=CASE_NOIRE, foreground=CASE_NOIRE,
+                              font=("Calibri", 16, "bold"), padding=4)
 
         btnQuitter.pack(side=BOTTOM, pady=10)
         btnQuitter.configure(style='TButton')

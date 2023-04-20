@@ -8,12 +8,13 @@ import PIL.ImageDraw
 import PIL.ImageFilter
 import PIL.ImageTk
 
+from model.EchiquierAtomic import EchiquierAtomic
 from model.constantes import *
 from model.pieces.Vide import Vide
 
 
 class ViewEchiquier:
-    def __init__(self, controller, model):
+    def __init__(self, controller, model, fenetre):
         self.frames_noirs = None
         self.frames_blancs = None
         self.imgs_mangees_haut = None
@@ -24,9 +25,12 @@ class ViewEchiquier:
         self.cases = [[tkinter.Label for x in range(LIGNE_MAX + 1)] for y in range(COLONNE_MAX + 1)]
         self.images = {}  # Dictionnaire pour stocker les images
         self.canvas = None  # Canvas pour afficher la promotion d'un pion
-        self.fenetre = Tk()  # Fenêtre principale
-        self.fenetre.protocol("WM_DELETE_WINDOW", self.close_frame)  # Fermer la fenêtre
+        self.fenetre = fenetre  # Fenêtre principale
         self.load_images()
+
+        self.fenetre.title("Partie Atomic" if isinstance(model, EchiquierAtomic)
+                           else "Partie normale")
+
 
         # Charger les images des cases
         self.images["case_blanche"] = PIL.Image.new("RGB", (TAILLE_CASE, TAILLE_CASE), CASE_BLANCHE)
@@ -44,29 +48,11 @@ class ViewEchiquier:
                 img = PIL.Image.open(chemin_image)
                 self.images[nom_image] = img
 
-    # Fermer la fenêtre
-    def close_frame(self):
-        self.fenetre.quit()
-        self.fenetre.destroy()
-        os._exit(0)
-
     # Initialiser la fenêtre avec tous ses composants
     def init_frame(self):
         # On récupère l'echiquier
         echiquier = self.model.echiquier
-        # ajout du titre et du logo
-        self.fenetre.title("Chessito")
-        logo = tkinter.PhotoImage(file="images/logo.png")
-        self.fenetre.iconphoto(False, logo)
-
-        # On centre la fenêtre
-        x0 = (self.fenetre.winfo_screenwidth() - WIDTH_WINDOW) // 2
-        y0 = (self.fenetre.winfo_screenheight() - HEIGHT_WINDOW) // 2
-        self.fenetre.geometry(f"{WIDTH_WINDOW}x{HEIGHT_WINDOW}+{x0}+{y0}")
-
-        # Empêche le redimensionnement de la fenêtre et on change la couleur de fond
-        self.fenetre.resizable(width=False, height=False)
-        self.fenetre.configure(background=BG_COLOR)
+        self.fenetre.config(bg=BG_COLOR)
 
         # On génère les images de l'échiquier
         img_cases = self.generer_images_echiquier()
@@ -97,10 +83,6 @@ class ViewEchiquier:
                     lettre_label.grid(row=LIGNE_MAX + 2, column=j + 1, sticky="n")
                     lettre_label.config(bg=self.fenetre.cget('bg'))
 
-        # Définir la configuration de style une fois pour toutes
-        ttk.Style().configure('styleButton.TButton', bordercolor="#fff", background=CASE_NOIRE, foreground=CASE_NOIRE,
-                              font=("Helvetica", 14, "bold"), padding=4)
-
         # Les boutons pour naviguer dans l'historique
         bouton_retour = ttk.Button(self.fenetre, text="Retour", command=self.controller.retour_deplacement,
                                    style='styleButton.TButton', width=6)
@@ -126,11 +108,6 @@ class ViewEchiquier:
         self.fenetre.rowconfigure(10, weight=1)
         self.fenetre.columnconfigure(0, weight=1)
         self.fenetre.columnconfigure(9, weight=1)
-
-        # Pour que la fenêtre soit toujours active et que le programme ne se bloque pas
-        while True:
-            self.fenetre.update()
-            self.fenetre.update_idletasks()
 
     # Clic sur une case
     def clic_btn_piece(self, piece, e):
@@ -304,4 +281,4 @@ class ViewEchiquier:
         if msg_box == 'yes':
             self.controller.rejouer()
         else:
-            self.close_frame()
+            self.fenetre.destroy()

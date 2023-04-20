@@ -53,5 +53,4 @@ class Pion(Piece):
         return deplacements
 
     def promotion_possible(self):
-        print(self.ligne in (LIGNE_MIN, LIGNE_MAX))
         return self.ligne in (LIGNE_MIN, LIGNE_MAX)

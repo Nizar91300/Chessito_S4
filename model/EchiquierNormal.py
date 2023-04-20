@@ -12,7 +12,7 @@ from model.constantes import Color, Promotion
 
 # classe qui contine les attributs statiques du modele
 class EchiquierNormal:
-    def __init__(self, isAI, *args):
+    def __init__(self, isAI, difficulte, *args):
         # si on donne un echiquier en parametre on l'utilise sinon on cree un echiquier normal
         if len(args) == 0:
             self.echiquier = [
@@ -41,6 +41,7 @@ class EchiquierNormal:
         self.pieces_mangees_blanc = []
         self.pieces_mangees_noir = []
         self.isAi = isAI
+        self.difficulte = difficulte
 
     # fonction pour la suppression de l'objet
     def __del__(self):
@@ -105,8 +106,9 @@ class EchiquierNormal:
 
     # simule un déplacement
     def simuler_deplacement(self, oldL, oldC, newL, newC):
-        echiquier_simulee = EchiquierNormal(self.isAi, copy.deepcopy(self.echiquier))
+        echiquier_simulee = EchiquierNormal(self.isAi, self.difficulte, copy.deepcopy(self.echiquier))
         echiquier_simulee.deplacer(oldL, oldC, newL, newC)
+
 
         return echiquier_simulee
 
@@ -149,9 +151,6 @@ class EchiquierNormal:
             for i in range(1, max_cases_left):
 
                 if not isinstance(self.echiquier[pos][i], Vide) or self.echiquier[pos][i].est_en_echec(self, self.couleur_joueur_actuel):
-                    print("piece = ",type(self.echiquier[pos][i]).__name__)
-                    if isinstance(self.echiquier[pos][i], Vide):
-                        print("echec = ",self.echiquier[pos][i].est_en_echec(self, self.couleur_joueur_actuel))
                     roque = False
                     break
             if roque:
@@ -241,7 +240,6 @@ class EchiquierNormal:
                     # on ne traite que les pieces de la couleur du joueur
                     if isinstance(piece, Vide) or piece.couleur != couleur:
                         continue
-
                     dep_poss = piece.get_deplacements_possibles(self)
 
                     # si la pièce peut se déplacer, ce n'est pas un pat
@@ -333,4 +331,4 @@ class EchiquierNormal:
         return self.pieces_mangees_blanc if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_noir
 
     def rejouer(self):
-        self.__init__(self.isAi)
+        self.__init__(self.isAi, self.difficulte)

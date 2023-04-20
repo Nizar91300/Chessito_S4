@@ -14,7 +14,6 @@ class EchiquierAtomic(EchiquierNormal):
 
     def deplacer(self, oldL, oldC, newL, newC):
         e = self.echiquier
-
         # si on mange un pion on detruit tout atour les autre pions
         if not isinstance(e[newL][newC], Vide) and e[newL][newC].couleur != e[oldL][oldC].couleur:
             e[oldL][oldC] = Vide(oldL, oldC)
@@ -39,13 +38,6 @@ class EchiquierAtomic(EchiquierNormal):
             self.index_historique += 1
         else:
             super().deplacer(oldL, oldC, newL, newC)
-
-    # simule un déplacement
-    def simuler_deplacement(self, oldL, oldC, newL, newC):
-        echiquier_simulee = EchiquierAtomic(self.isAi, copy.deepcopy(self.echiquier))
-        echiquier_simulee.deplacer(oldL, oldC, newL, newC)
-
-        return echiquier_simulee
 
     def verifier_echec_et_mat(self, couleur):
         if self.get_roi(couleur) is None:

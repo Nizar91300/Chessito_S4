@@ -2,11 +2,15 @@ from tkinter import Menu, BOTH, GROOVE, colorchooser
 
 import tkinter as tk
 
-
 # Classe Chessito, qui hérite de la classe tk.Tk
+from controller.controllerNormal import ControllerNormal
+from model import constantes
+from model.EchiquierAtomic import EchiquierAtomic
+from model.EchiquierNormal import EchiquierNormal
 from view.viewAccueil.frameAccueil import FrameAccueil
 from view.viewAccueil.frameNbJoueurs import FrameNbJoueur
 from view.viewAccueil.frameNiveau import FrameNiveau
+from view.viewAccueil.frameTimer import FrameTimer
 
 
 class ViewAccueil(tk.Tk):
@@ -14,6 +18,7 @@ class ViewAccueil(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
 
         self.minsize(600, 700)
+        self.geometry("900x700")
 
         self.withdraw()
 
@@ -73,6 +78,10 @@ class ViewAccueil(tk.Tk):
             frame = FrameNiveau(container, self, nom)
             self.frames[nom] = frame
             frame.grid(row=0, column=0, sticky="nsew")
+        for nom in ("ClassiqueNiveauTimer", "AtomicNiveauTimer", "TTDNiveauTimer", ):
+            frame = FrameTimer(container, self, nom)
+            self.frames[nom] = frame
+            frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("Accueil")
 
@@ -91,16 +100,42 @@ class ViewAccueil(tk.Tk):
         self.labelBarMenu_alert("Préférences")
 
         color = colorchooser.askcolor()[1]  # ouvre une fenêtre de sélection de couleur
+        print(color)
         if color:
             if color_type == "light":
-                # Changer la couleur des cases claires
-                print("La couleur des cases claires est " + color)
+                constantes.CASE_BLANCHE = color
             else:
-                # Changer la couleur des cases foncées
-                print("La couleur des cases claires est " + color)
+                constantes.CASE_NOIRE = color
 
     # ajout de la fonction pour le label A Propos
     def alert_label_a_propos(self):
         self.labelBarMenu_alert("A Propos")
+
+    def partie_bot(self, mode, difficulte):
+        for widget in self.winfo_children():
+            if not widget.winfo_class() == "Menu":
+                widget.destroy()
+
+        controller = None
+        if mode == "Classique":
+            if difficulte == "Facile":
+                controller = ControllerNormal( EchiquierNormal(True, 0) , self)
+            elif difficulte == "Moyen":
+                controller = ControllerNormal( EchiquierNormal(True, 1), self )
+            elif difficulte == "Difficile":
+                controller = ControllerNormal( EchiquierNormal(True, 2), self)
+
+        elif mode == "Atomic":
+            if difficulte == "Facile":
+                controller = ControllerNormal( EchiquierAtomic(True, 0), self )
+            elif difficulte == "Moyen":
+                controller = ControllerNormal( EchiquierAtomic(True, 1), self )
+            elif difficulte == "Difficile":
+                controller = ControllerNormal( EchiquierAtomic(True, 2), self )
+
+        elif mode == "TTD":
+            print("Pas encore implémenté")
+
+        controller.run()
 
 
