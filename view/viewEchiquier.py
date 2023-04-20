@@ -110,6 +110,17 @@ class ViewEchiquier:
                                     style='styleButton.TButton', width=6)
         bouton_avancer.grid(row=11, column=5, columnspan=2, sticky="WE", padx=5)
 
+        for l in (0, 10):
+            frame = Frame(self.fenetre, width=60, height=30, bg=BG_COLOR, bd=0)
+            frame.grid(row=l, column=1)
+
+            # Création d'une image vide
+            img = PIL.ImageTk.PhotoImage(image=PIL.Image.new("RGB", (30, 30), BG_COLOR))
+            lbl2 = Label(frame, image=img, bg=BG_COLOR, bd=0)
+            lbl2.image = img
+            lbl2.pack(side=tkinter.RIGHT)
+
+
         # les espaces qui sont autour de l'echiquier pour centrer l'echiquier
         self.fenetre.rowconfigure(0, weight=1)
         self.fenetre.rowconfigure(10, weight=1)
@@ -178,6 +189,7 @@ class ViewEchiquier:
 
         p_mangees_haut = self.model.get_pieces_mangees_haut()
         self.imgs_mangees_haut = []
+
         for i in range(len(p_mangees_haut)):
             img = self.images[p_mangees_haut[i]].copy()
             img.thumbnail((30, 30), PIL.Image.ANTIALIAS)

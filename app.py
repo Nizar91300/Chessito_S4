@@ -1,9 +1,8 @@
-from view.viewAccueil.viewAccueil import ViewAccueil
+from view.vueAccueil import ViewAccueil
 
 
 def main():
     app = ViewAccueil()
-    app.mainloop()
 
 if __name__ == '__main__':
     main()
