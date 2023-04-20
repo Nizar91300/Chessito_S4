@@ -44,7 +44,7 @@ class FrameNiveau(tk.Frame):
         label.pack()
 
         # ajout d'un label pour le titre du FrameChoixJoueur.
-        lblMenu = Label(FramePrincipale, text=self.titre, bg=GRIS, fg=CASE_BLANCHE, font=('Arial', 24))
+        lblMenu = Label(FramePrincipale, text=self.titre.split('N')[0], bg=GRIS, fg=CASE_BLANCHE, font=('Arial', 24))
         lblMenu.pack(padx=10, pady=10)
 
         # bouton pour revenir à la page précédente.
