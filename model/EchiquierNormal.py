@@ -332,3 +332,6 @@ class EchiquierNormal:
         if self.isAi:
             return self.pieces_mangees_blanc
         return self.pieces_mangees_blanc if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_noir
+
+    def rejouer(self):
+        self.__init__(self.isAi)

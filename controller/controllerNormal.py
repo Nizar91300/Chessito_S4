@@ -98,7 +98,7 @@ class ControllerNormal:
             return
 
     def rejouer(self):
-        self.model.couleur_joueur_actuel = Color.BLANC
+        self.model.rejouer()
         self.view.update_frame()
 
     def retour_deplacement(self):

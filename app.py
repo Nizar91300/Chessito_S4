@@ -1,8 +1,7 @@
 from view.vueAccueil import ViewAccueil
 
-
 def main():
-    app = ViewAccueil()
+    ViewAccueil()
 
 if __name__ == '__main__':
     main()
