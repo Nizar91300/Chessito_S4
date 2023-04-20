@@ -31,7 +31,7 @@ class EchiquierNormal:
         else:
             self.echiquier = args[0]
 
-        self.historique_echiquier = [self.echiquier]
+        self.historique_echiquier = [copy.deepcopy(self.echiquier)]
         self.dernier_coup = None
         self.historique_coups = []
         self.piece_selectionne = self.selected_piece_moves = None
@@ -307,7 +307,6 @@ class EchiquierNormal:
         return False
 
     # retourne vrai si on est au dernier coup de l'historique, faux sinon
-
     def avancer_deplacement(self):
         index = self.index_historique
         if index < len(self.historique_echiquier)-1:
