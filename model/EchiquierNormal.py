@@ -1,5 +1,6 @@
 import copy
 
+from model.Piece import Piece
 from model.pieces.Cavalier import Cavalier
 from model.pieces.Dame import Dame
 from model.pieces.Fou import Fou
@@ -12,6 +13,9 @@ from model.constantes import Color, Promotion
 
 # classe qui contine les attributs statiques du modele
 class EchiquierNormal:
+    ECHEC_ET_MAT = 1000
+    NULLE = 0
+
     def __init__(self, isAI, difficulte, *args):
         # si on donne un echiquier en parametre on l'utilise sinon on cree un echiquier normal
         if len(args) == 0:
@@ -42,6 +46,10 @@ class EchiquierNormal:
         self.pieces_mangees_noir = []
         self.isAi = isAI
         self.difficulte = difficulte
+        if difficulte == 1:
+            Piece.PROFONDEUR = 2
+        elif difficulte == 2:
+            Piece.PROFONDEUR = 3
 
     # fonction pour la suppression de l'objet
     def __del__(self):
@@ -53,6 +61,27 @@ class EchiquierNormal:
         del self.selected_piece_moves
         del self.couleur_joueur_actuel
         del self.index_historique
+
+    def scoreEchiquier(self):
+
+        if self.verifier_echec_et_mat(Color.BLANC):
+            return self.ECHEC_ET_MAT
+        elif self.verifier_echec_et_mat(Color.NOIR):
+            print("errrr")
+            return -self.ECHEC_ET_MAT
+        elif self.verifier_pat(Color.BLANC):
+            return self.NULLE
+
+        self.score = 0
+        for ligne in self.echiquier:
+            for piece in ligne:
+                if not isinstance(piece, Vide):
+                    if piece.couleur == Color.BLANC:
+                        self.score += piece.valeur
+                    else:
+                        self.score -= piece.valeur
+
+        return self.score
 
     # deplacer une piece
     def deplacer(self, oldL, oldC, newL, newC):

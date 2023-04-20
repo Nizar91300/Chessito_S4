@@ -1,4 +1,5 @@
 import model.EchiquierAtomic
+from model.Piece import Piece
 from model.constantes import Color, FinPartie
 from model.pieces.Pion import Pion
 from model.pieces.Vide import Vide
@@ -60,10 +61,16 @@ class ControllerNormal:
             else:
                 # on deplace la piece
                 self.deplacer(piece.ligne, piece.colonne)
-            # on change de joueur
-            self.model.couleur_joueur_actuel = Color.NOIR if self.model.couleur_joueur_actuel == Color.BLANC else Color.BLANC
-            # on verifie si c'est la fin de la partie
-            self.verifier_fin_de_partie(self.model.couleur_joueur_actuel)
+
+            if self.model.isAi:
+                self.verifier_fin_de_partie(Color.NOIR)
+                self.deplacer_AI()
+                self.view.update_frame()
+                self.verifier_fin_de_partie(Color.BLANC)
+            else:
+                self.model.couleur_joueur_actuel = Color.NOIR if self.model.couleur_joueur_actuel == Color.BLANC else Color.BLANC
+                # on verifie si c'est la fin de la partie
+                self.verifier_fin_de_partie(self.model.couleur_joueur_actuel)
             if isinstance(self.model, model.EchiquierAtomic.EchiquierAtomic):
                 self.verifier_fin_de_partie(Color.BLANC if self.model.couleur_joueur_actuel == Color.NOIR else Color.NOIR)
             return
@@ -119,3 +126,13 @@ class ControllerNormal:
                 self.view.update_frame()
             else:
                 self.view.afficher_historique()
+
+    def deplacer_AI(self):
+        # on recupere le meilleur deplacement selon la difficulte
+        if self.model.difficulte == 0:
+            piece, new_row, new_col = Piece.randomOrEat(self.model)
+        if self.model.difficulte == 1 or self.model.difficulte == 2:
+            piece, new_row, new_col = Piece.chercheMeilleurDp(self.model)
+
+        # Move the piece to its new location on the board
+        self.model.deplacer(piece.ligne, piece.colonne, new_row, new_col)

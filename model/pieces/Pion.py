@@ -10,7 +10,7 @@ class Pion(Piece):
 
     # constructeur
     def __init__(self, coul, lin, col):
-        super().__init__(coul, lin, col)
+        super().__init__(coul, lin, col, 1)
 
     # méthode qui retourne les déplacements possibles
     def get_all_deplacements(self, modele):

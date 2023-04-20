@@ -5,7 +5,7 @@ from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX
 class Roi(Piece):
     # constructeur
     def __init__(self, coul, lin, col):
-        super().__init__(coul, lin, col)
+        super().__init__(coul, lin, col, 0)
 
     # méthode qui retourne les déplacements possibles
     def get_all_deplacements(self, model):

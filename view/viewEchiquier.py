@@ -282,3 +282,5 @@ class ViewEchiquier:
             self.controller.rejouer()
         else:
             self.fenetre.destroy()
+
+
