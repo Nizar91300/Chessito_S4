@@ -53,6 +53,7 @@ class ViewAccueil(tk.Tk):
         # ajout des items du menu dans le menu Paramètre
         parametre_menu.add_command(label="A propos", command=self.alert_label_a_propos)
         parametre_menu.add_separator()
+        parametre_menu.add_command(label="Revenir au menu principal", command=self.revenir_menu_principal)
         parametre_menu.add_command(label="Quitter", command=self.quit)
 
         # ajout du menu Paramètre dans le menubar
@@ -86,6 +87,10 @@ class ViewAccueil(tk.Tk):
         self.show_frame("Accueil")
 
         self.deiconify()
+
+    def revenir_menu_principal(self):
+        self.destroy()
+        self.__init__()
 
     def show_frame(self, cont):
         frame = self.frames[cont]
