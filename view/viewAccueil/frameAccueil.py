@@ -67,15 +67,15 @@ class FrameAccueil(tk.Frame):
 
         # boutons pour les modes de jeu.
         btnClassique = ttk.Button(FrameMenu, text='Classique', command=lambda: controller.show_frame("Classique"))
-        btnTTD = ttk.Button(FrameMenu, text='Tactical TakeDown', command=lambda: controller.show_frame("TTD"))
         btnAtomic = ttk.Button(FrameMenu, text='Atomic', command=lambda: controller.show_frame("Atomic"))
+        btnTTD = ttk.Button(FrameMenu, text='Tactical TakeDown', command=lambda: controller.show_frame("TTD"))
 
         # ajout des boutons pour les modes de jeu dans la FrameMenu.
         btnClassique.pack(ipady=15, fill=BOTH, expand=True)
         btnClassique.configure(style='TButton')
 
-        btnTTD.pack(ipady=15, pady=20, fill=BOTH, expand=True)
-        btnTTD.configure(style='TButton')
-
-        btnAtomic.pack(ipady=15, fill=BOTH, expand=True)
+        btnAtomic.pack(ipady=15, pady=20, fill=BOTH, expand=True)
         btnAtomic.configure(style='TButton')
+
+        btnTTD.pack(ipady=15, fill=BOTH, expand=True)
+        btnTTD.configure(style='TButton')

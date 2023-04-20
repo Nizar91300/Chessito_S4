@@ -70,7 +70,7 @@ class ViewAccueil(tk.Tk):
         frame = FrameAccueil(container, self)
         self.frames["Accueil"] = frame
         frame.grid(row=0, column=0, sticky="nsew")
-        for nom in ("Classique", "TTD", "Atomic"):
+        for nom in ("Classique", "Atomic", "TTD"):
             frame = FrameNbJoueur(container, self, nom)
             self.frames[nom] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -122,7 +122,7 @@ class ViewAccueil(tk.Tk):
                 controller = ControllerNormal( EchiquierNormal(True, 0) , self)
             elif difficulte == "Intermediaire":
                 controller = ControllerNormal( EchiquierNormal(True, 1), self )
-            elif difficulte == "Intermediaire":
+            elif difficulte == "Difficile":
                 controller = ControllerNormal( EchiquierNormal(True, 2), self)
 
         elif mode == "Atomic":
