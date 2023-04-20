@@ -120,21 +120,40 @@ class ViewAccueil(tk.Tk):
         if mode == "Classique":
             if difficulte == "Facile":
                 controller = ControllerNormal( EchiquierNormal(True, 0) , self)
-            elif difficulte == "Moyen":
+            elif difficulte == "Intermediaire":
                 controller = ControllerNormal( EchiquierNormal(True, 1), self )
-            elif difficulte == "Difficile":
+            elif difficulte == "Intermediaire":
                 controller = ControllerNormal( EchiquierNormal(True, 2), self)
 
         elif mode == "Atomic":
             if difficulte == "Facile":
                 controller = ControllerNormal( EchiquierAtomic(True, 0), self )
-            elif difficulte == "Moyen":
+            elif difficulte == "Intermediaire":
                 controller = ControllerNormal( EchiquierAtomic(True, 1), self )
             elif difficulte == "Difficile":
                 controller = ControllerNormal( EchiquierAtomic(True, 2), self )
 
         elif mode == "TTD":
             print("Pas encore implémenté")
+            return
+
+        controller.run()
+
+    def partie_joueur(self, mode):
+        for widget in self.winfo_children():
+            if not widget.winfo_class() == "Menu":
+                widget.destroy()
+
+        controller = None
+        if mode == "Classique":
+            controller = ControllerNormal( EchiquierNormal(False, 0), self)
+
+        elif mode == "Atomic":
+            controller = ControllerNormal( EchiquierAtomic(False, 0), self )
+
+        elif mode == "TTD":
+            print("Pas encore implémenté")
+            return
 
         controller.run()
 

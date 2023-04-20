@@ -58,7 +58,7 @@ class FrameNiveau(tk.Frame):
 
         # boutons pour les modes de jeu.
         btnFacile = ttk.Button(FrameChoixJoueur, text='Facile', command=lambda: controller.partie_bot(self.titre.split('N')[0], "Facile"))
-        btnIntermediaire = ttk.Button(FrameChoixJoueur, text='Intermédiaire', command=lambda: controller.partie_bot(self.titre.split('N')[0], "Intermédiare"))
+        btnIntermediaire = ttk.Button(FrameChoixJoueur, text='Intermédiaire', command=lambda: controller.partie_bot(self.titre.split('N')[0], "Intermediaire"))
         btnDifficile = ttk.Button(FrameChoixJoueur, text='Difficile', command=lambda: controller.partie_bot(self.titre.split('N')[0], "Difficile"))
 
         # ajout des boutons pour les modes de jeu dans la FrameChoixJoueur.

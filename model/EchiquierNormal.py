@@ -46,10 +46,11 @@ class EchiquierNormal:
         self.pieces_mangees_noir = []
         self.isAi = isAI
         self.difficulte = difficulte
-        if difficulte == 1:
-            Piece.PROFONDEUR = 2
-        elif difficulte == 2:
-            Piece.PROFONDEUR = 3
+        if isAI:
+            if difficulte == 1:
+                Piece.PROFONDEUR = 2
+            elif difficulte == 2:
+                Piece.PROFONDEUR = 3
 
     # fonction pour la suppression de l'objet
     def __del__(self):
@@ -87,7 +88,7 @@ class EchiquierNormal:
     def deplacer(self, oldL, oldC, newL, newC):
         # si on mange une piece on l'ajoute a la liste des pieces mangees
         if not isinstance(self.echiquier[newL][newC], Vide):
-            if self.couleur_joueur_actuel == Color.NOIR:
+            if self.echiquier[newL][newC] == Color.NOIR:
                 self.pieces_mangees_blanc.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )
             else:
                 self.pieces_mangees_noir.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )

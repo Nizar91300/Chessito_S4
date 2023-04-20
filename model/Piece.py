@@ -1,4 +1,4 @@
-from random import random
+import random
 
 from model.constantes import Color
 from model.pieces.Vide import Vide

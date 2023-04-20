@@ -60,7 +60,7 @@ class FrameNbJoueur(tk.Frame):
         btnUnJoueur = ttk.Button(FrameChoixJoueur, text='1 vs Computer',
                                  command=lambda: controller.show_frame(self.titre+"Niveau"))
         btnDeuxJoueurs = ttk.Button(FrameChoixJoueur, text='1 vs 1',
-                                    command=lambda: controller.show_frame(self.titre+"NiveauTimer"))
+                                    command=lambda: controller.partie_joueur(self.titre))
 
         # ajout des boutons pour les modes de jeu dans la FrameChoixJoueur.
         btnUnJoueur.pack(ipady=15, fill=BOTH, expand=True)
