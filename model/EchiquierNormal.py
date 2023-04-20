@@ -160,7 +160,7 @@ class EchiquierNormal:
         roque = True
         # Roque à droite (petit roque si blanc grand si noir)
         if isinstance(self.echiquier[pos][7], Tour) and self.echiquier[pos][7].nb_deplacements == 0:
-            for i in [max_cases_right, 6]:
+            for i in range(max_cases_right, 6):
                 if not isinstance(self.echiquier[pos][i], Vide) or self.echiquier[pos][i].est_en_echec(self, self.couleur_joueur_actuel):
                     roque = False
                     break
