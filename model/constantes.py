@@ -5,6 +5,7 @@ WIDTH_WINDOW = 700
 HEIGHT_WINDOW = 600
 
 BG_COLOR = "#808080"
+GRIS = '#676B6C'
 
 # taille des cases
 TAILLE_CASE = 60
