@@ -10,7 +10,21 @@ class Pion(Piece):
 
     # constructeur
     def __init__(self, coul, lin, col):
-        super().__init__(coul, lin, col, 1)
+        pawnEvalWhite = [
+            [10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0],
+            [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
+            [1.0, 1.0, 2.0, 3.0, 3.0, 2.0, 1.0, 1.0],
+            [0.5, 0.5, 1.0, 2.5, 2.5, 1.0, 0.5, 0.5],
+            [0.0, 0.0, 0.0, 2.0, 2.0, 0.0, 0.0, 0.0],
+            [0.5, -0.5, -1.0, 0.0, 0.0, -1.0, -0.5, 0.5],
+            [0.5, 1.0, 1.0, -2.0, -2.0, 1.0, 1.0, 0.5],
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        ]
+        if coul == Color.BLANC:
+            super().__init__(coul, lin, col, 1, pawnEvalWhite)
+        else:
+            pawnEvalBlack = pawnEvalWhite[::-1]
+            super().__init__(coul, lin, col, 1, pawnEvalBlack)
 
     # méthode qui retourne les déplacements possibles
     def get_all_deplacements(self, modele):

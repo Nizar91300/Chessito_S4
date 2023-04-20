@@ -1,11 +1,26 @@
 from model.Piece import Piece
 from model.pieces.Vide import Vide
-from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX
+from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX, Color
+
 
 class Tour(Piece):
     # constructeur
     def __init__(self, coul, lin, col):
-        super().__init__(coul, lin, col, 5)
+        rookEvalWhite = [
+            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [-0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.5],
+            [0.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0]
+        ]
+        if coul == Color.BLANC:
+            super().__init__(coul, lin, col, 5, rookEvalWhite)
+        else:
+            rookEvalBlack = rookEvalWhite[::-1]
+            super().__init__(coul, lin, col, 5, rookEvalBlack)
 
     # méthode qui retourne les déplacements possibles
     def get_all_deplacements(self, model):

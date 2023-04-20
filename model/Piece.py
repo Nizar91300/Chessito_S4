@@ -7,12 +7,14 @@ from model.pieces.Vide import Vide
 class Piece:
     PROFONDEUR = 2
     counter = 0
-    def __init__(self, coul, lin, col, val):
+    def __init__(self, coul, lin, col, val, val_pos):
         self.couleur = coul
         self.ligne = lin
         self.colonne = col
         self.nb_deplacements = 0
         self.valeur = val
+
+        self.valeurpos = val_pos # bonus ou malus selon la position de la piece
 
     # pour comparer deux pieces
     def __eq__(self, other):
@@ -62,18 +64,15 @@ class Piece:
                 if not isinstance(piece, Vide) and piece.couleur == couleur:
                     # Do something with the piece instance
                     all_dep_poss += [(piece, x, y) for (p, x, y) in piece.get_deplacements_possibles_AI(model)]
-                    # print(piece.couleur, piece.ligne, piece.colonne, piece.nb_deplacements)
         return all_dep_poss
 
     @staticmethod
     def randomOrEat(model):
         tous_dep_noires = Piece.get_all_deplacements_p(model, Color.NOIR)
         random_index = random.randint(0, len(tous_dep_noires) - 1)
-        # print(tous_dep_noires)
         scoreInitial = model.scoreEchiquier()
 
         mv_a_faire = []
-        print("Score initial: ", scoreInitial)
         for mv in tous_dep_noires:
             piece, new_row, new_col = mv[0], mv[1], mv[2]
             echiquier_simulee = model.simuler_deplacement(piece.ligne, piece.colonne, new_row, new_col)
@@ -82,13 +81,10 @@ class Piece:
                 mv_a_faire.append((mv, score))
 
         if (len(mv_a_faire) > 0):
-            print(mv_a_faire)
             lowest_score = float('inf')
             lowest_score_move = None
             for move, score in mv_a_faire:
-                print("Score avant", score, lowest_score)
                 if score < lowest_score:
-                    print("Score après", score)
                     lowest_score = score
                     lowest_score_move = move
             return lowest_score_move
@@ -100,7 +96,6 @@ class Piece:
         Piece.counter = 0
 
         Piece.trouverDpNegaMaxAlphaBeta(model, Piece.PROFONDEUR, -1, -1000, 1000)
-        print(Piece.counter)
         return prochainDp
 
     @staticmethod

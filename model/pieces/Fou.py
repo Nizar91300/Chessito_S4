@@ -1,11 +1,26 @@
 from model.Piece import Piece
 from model.pieces.Vide import Vide
-from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX
+from model.constantes import LIGNE_MIN, LIGNE_MAX, COLONNE_MIN, COLONNE_MAX, Color
+
 
 class Fou(Piece):
     # constructeur
     def __init__(self, coul, lin, col):
-        super().__init__(coul, lin, col, 3)
+        bishopEvalWhite = [
+            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
+            [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+            [-1.0, 0.0, 0.5, 1.0, 1.0, 0.5, 0.0, -1.0],
+            [-1.0, 0.5, 0.5, 1.0, 1.0, 0.5, 0.5, -1.0],
+            [-1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, -1.0],
+            [-1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0],
+            [-1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, -1.0],
+            [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0]
+        ]
+        if coul == Color.BLANC:
+            super().__init__(coul, lin, col, 5, bishopEvalWhite)
+        else:
+            bishopEvalBlack = bishopEvalWhite[::-1]
+            super().__init__(coul, lin, col, 5, bishopEvalBlack)
 
     # méthode qui retourne les déplacements possibles
     def get_all_deplacements(self, modele):

@@ -51,6 +51,7 @@ class EchiquierNormal:
                 Piece.PROFONDEUR = 2
             elif difficulte == 2:
                 Piece.PROFONDEUR = 3
+        self.score = 0
 
     # fonction pour la suppression de l'objet
     def __del__(self):
@@ -66,21 +67,25 @@ class EchiquierNormal:
     def scoreEchiquier(self):
 
         if self.verifier_echec_et_mat(Color.BLANC):
-            return self.ECHEC_ET_MAT
+            return self.echec_et_mat
         elif self.verifier_echec_et_mat(Color.NOIR):
-            print("errrr")
-            return -self.ECHEC_ET_MAT
+            return -self.echec_et_mat
         elif self.verifier_pat(Color.BLANC):
-            return self.NULLE
+            return self.nulle
 
         self.score = 0
+        row = 0
+        col = 0
         for ligne in self.echiquier:
+            row += 1
+            col = 0
             for piece in ligne:
+                col += 1
                 if not isinstance(piece, Vide):
                     if piece.couleur == Color.BLANC:
-                        self.score += piece.valeur
+                        self.score += piece.valeur + piece.valeurpos[row-1][col-1]
                     else:
-                        self.score -= piece.valeur
+                        self.score += -piece.valeur + piece.valeurpos[row-1][col-1]
 
         return self.score
 
@@ -88,7 +93,7 @@ class EchiquierNormal:
     def deplacer(self, oldL, oldC, newL, newC):
         # si on mange une piece on l'ajoute a la liste des pieces mangees
         if not isinstance(self.echiquier[newL][newC], Vide):
-            if self.echiquier[newL][newC] == Color.NOIR:
+            if self.echiquier[newL][newC] == Color.BLANC:
                 self.pieces_mangees_blanc.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )
             else:
                 self.pieces_mangees_noir.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )

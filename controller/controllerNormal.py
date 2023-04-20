@@ -9,6 +9,7 @@ class ControllerNormal:
     def __init__(self, model, fenetre):
         self.view = View(self, model, fenetre)
         self.model = model
+        self.nb_coups_ia = 0
 
     # lancer l'application
     def run(self):
@@ -132,7 +133,11 @@ class ControllerNormal:
         if self.model.difficulte == 0:
             piece, new_row, new_col = Piece.randomOrEat(self.model)
         if self.model.difficulte == 1 or self.model.difficulte == 2:
-            piece, new_row, new_col = Piece.chercheMeilleurDp(self.model)
+            if self.nb_coups_ia < 8:
+                piece, new_row, new_col = Piece.randomOrEat(self.model)
+                self.nb_coups_ia += 1
+            else:
+                piece, new_row, new_col = Piece.chercheMeilleurDp(self.model)
 
         # Move the piece to its new location on the board
         self.model.deplacer(piece.ligne, piece.colonne, new_row, new_col)
