@@ -93,11 +93,10 @@ class EchiquierNormal:
     def deplacer(self, oldL, oldC, newL, newC):
         # si on mange une piece on l'ajoute a la liste des pieces mangees
         if not isinstance(self.echiquier[newL][newC], Vide):
-            if self.echiquier[newL][newC] == Color.BLANC:
+            if self.echiquier[newL][newC].couleur == Color.NOIR:
                 self.pieces_mangees_blanc.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )
             else:
                 self.pieces_mangees_noir.append( type(self.echiquier[newL][newC]).__name__.lower() + "_" + self.echiquier[newL][newC].couleur.name.lower() )
-
         self.echiquier[newL][newC] = self.echiquier[oldL][oldC]
         self.echiquier[oldL][oldC] = Vide(oldL, oldC)
         # on met a jour la position de la piece deplace
@@ -358,12 +357,12 @@ class EchiquierNormal:
     def get_pieces_mangees_haut(self):
         if self.isAi:
             return self.pieces_mangees_noir
-        return self.pieces_mangees_noir if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_blanc
+        return self.pieces_mangees_noir if self.couleur_joueur_actuel == Color.BLANC else self.pieces_mangees_blanc
 
     def get_pieces_mangees_bas(self):
         if self.isAi:
             return self.pieces_mangees_blanc
-        return self.pieces_mangees_blanc if self.couleur_joueur_actuel == "blanc" else self.pieces_mangees_noir
+        return self.pieces_mangees_blanc if self.couleur_joueur_actuel == Color.BLANC else self.pieces_mangees_noir
 
     def rejouer(self):
         self.__init__(self.isAi, self.difficulte)

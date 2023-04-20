@@ -74,6 +74,7 @@ class ControllerNormal:
                 self.verifier_fin_de_partie(self.model.couleur_joueur_actuel)
             if isinstance(self.model, model.EchiquierAtomic.EchiquierAtomic):
                 self.verifier_fin_de_partie(Color.BLANC if self.model.couleur_joueur_actuel == Color.NOIR else Color.NOIR)
+            self.view.update_frame()
             return
 
         # si on clique sur une autre piece on cache les deplacements de l'ancienne piece

@@ -19,6 +19,16 @@ class ViewAccueil(tk.Tk):
 
         self.minsize(600, 700)
         self.geometry("900x700")
+        # mettre à jour la géométrie de la fenêtre
+        self.update_idletasks()
+        # calculer la position de la fenêtre centrée
+        # obtenir la position horizontale centrée de la fenêtre
+        x_pos = (self.winfo_screenwidth() - self.winfo_width()) // 2
+        # obtenir la position verticale centrée de la fenêtre
+        y_pos = (self.winfo_screenheight() - self.winfo_height() - self.winfo_y()) // 2 + self.winfo_y()
+
+        # définir la position de la fenêtre centrée
+        self.geometry("+{}+{}".format(x_pos, y_pos))
 
         self.withdraw()
 
